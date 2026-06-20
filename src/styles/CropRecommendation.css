@@ -1,0 +1,45 @@
+/* 🌾 Crop & Fertilizer Recommendation Inputs */
+.crop-card input,
+.crop-card select {
+  width: 120px;
+  padding: 8px;
+  margin: 6px;
+  border: 1.5px solid #4b6043; /* subtle green border */
+  border-radius: 6px;
+  background-color: #e9f3e4; /* light green background */
+  color: #2f3e2f;
+  font-size: 14px;
+  font-family: "Segoe UI", sans-serif;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  transition: all 0.2s ease-in-out;
+}
+
+.crop-card input:focus,
+.crop-card select:focus {
+  outline: none;
+  border-color: #3b7a57; /* darker green on focus */
+  background-color: #f5fff2;
+}
+
+/* Buttons */
+.crop-card button {
+  background-color: #3b7a57;
+  color: white;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background-color 0.2s ease-in-out;
+}
+
+.crop-card button:hover {
+  background-color: #2f5c43;
+}
+
+/* Section Headings */
+.crop-card h2 {
+  color: #2f5c43;
+  font-family: "Segoe UI", sans-serif;
+  margin-bottom: 10px;
+}

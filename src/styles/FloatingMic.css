@@ -1,0 +1,75 @@
+/* 🎤 MIC CONTAINER */
+.mic-container {
+  position: fixed;
+  bottom: 25px;
+  right: 25px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+/* 🎤 MIC BUTTON */
+.mic-btn {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  border: none;
+  background: #2e7d32;
+  color: white;
+  font-size: 24px;
+  cursor: pointer;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+  transition: 0.3s;
+}
+
+.mic-btn:hover {
+  background: #1b5e20;
+  transform: scale(1.1);
+}
+
+/* 🌊 WAVEFORM CONTAINER */
+.wave-container {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  height: 20px;
+}
+
+/* 🌊 BARS */
+.bar {
+  width: 4px;
+  height: 5px;
+  background: #2e7d32;
+  border-radius: 5px;
+  animation: wave 1s infinite ease-in-out;
+  opacity: 0;
+}
+
+/* stagger animation */
+.bar1 { animation-delay: 0s; }
+.bar2 { animation-delay: 0.1s; }
+.bar3 { animation-delay: 0.2s; }
+.bar4 { animation-delay: 0.3s; }
+.bar5 { animation-delay: 0.4s; }
+
+/* 🎯 ANIMATION */
+@keyframes wave {
+  0% {
+    height: 5px;
+    opacity: 0.2;
+  }
+  50% {
+    height: 20px;
+    opacity: 1;
+  }
+  100% {
+    height: 5px;
+    opacity: 0.2;
+  }
+}
+
+/* 🔴 ACTIVE STATE (when recording) */
+.mic-container.active .bar {
+  animation: wave 0.8s infinite ease-in-out;
+}

@@ -1,0 +1,45 @@
+.upload-card {
+  background: white;
+
+  padding: 25px;
+
+  border-radius: 15px;
+
+  text-align: center;
+
+  margin: 20px 0;
+
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+
+.upload-icon {
+  font-size: 60px;
+}
+
+.preview {
+  width: 100%;
+
+  max-height: 250px;
+
+  object-fit: cover;
+
+  border-radius: 12px;
+
+  margin-bottom: 15px;
+}
+
+.upload-card button {
+  margin-top: 15px;
+
+  padding: 12px 20px;
+
+  border: none;
+
+  border-radius: 10px;
+
+  background: #2e7d32;
+
+  color: white;
+
+  cursor: pointer;
+}
