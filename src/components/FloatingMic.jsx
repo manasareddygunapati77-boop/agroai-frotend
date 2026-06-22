@@ -1,47 +1,59 @@
 import { useRef } from "react";
-import "../styles/FloatingMic.css";
 
-function FloatingMic({ onSearch, setIsRecording, language }) {
+function FloatingMic({ setQuery, setIsRecording, selectedLanguage }) {
   const recognitionRef = useRef(null);
+  const isRunningRef = useRef(false);
 
-  const startRecording = () => {
+  const initRecognition = () => {
     const SpeechRecognition =
       window.SpeechRecognition || window.webkitSpeechRecognition;
 
     if (!SpeechRecognition) {
-      alert("Speech recognition is not supported in this browser.");
-      return;
+      alert("Speech recognition not supported in this browser.");
+      return null;
     }
 
+    const recognition = new SpeechRecognition();
+    recognition.lang = selectedLanguage === "ta" ? "ta-IN" : "en-IN";
+    recognition.continuous = false;
+    recognition.interimResults = false;
+
+    recognition.onstart = () => {
+      isRunningRef.current = true;
+      setIsRecording(true);
+      console.log("🎤 Listening started (" + recognition.lang + ")");
+    };
+
+    recognition.onresult = (event) => {
+      const text = event.results[0][0].transcript;
+      console.log("VOICE:", text);
+      setQuery(text); // ✅ put transcript into search bar
+    };
+
+    recognition.onerror = (event) => {
+      console.log("Error:", event.error);
+      setIsRecording(false);
+      isRunningRef.current = false;
+    };
+
+    recognition.onend = () => {
+      setIsRecording(false);
+      isRunningRef.current = false;
+      console.log("🎤 Listening ended");
+    };
+
+    return recognition;
+  };
+
+  const startRecording = () => {
     if (!recognitionRef.current) {
-      recognitionRef.current = new SpeechRecognition();
-      recognitionRef.current.lang = language || "en-IN";
-      recognitionRef.current.continuous = false; // one phrase at a time
-      recognitionRef.current.interimResults = false;
+      recognitionRef.current = initRecognition();
+    }
+    if (!recognitionRef.current) return;
 
-      recognitionRef.current.onstart = () => {
-        setIsRecording(true);
-        console.log("🎤 Listening started");
-      };
-
-      recognitionRef.current.onresult = (event) => {
-        const text = event.results[0][0].transcript;
-        console.log("VOICE:", text);
-        if (onSearch) onSearch(text);
-      };
-
-      recognitionRef.current.onerror = (event) => {
-        console.log("Error:", event.error);
-        if (event.error === "no-speech") {
-          alert("No speech detected. Please speak louder and closer to the microphone.");
-        }
-        setIsRecording(false);
-      };
-
-      recognitionRef.current.onend = () => {
-        setIsRecording(false);
-        console.log("🎤 Listening ended");
-      };
+    if (isRunningRef.current) {
+      recognitionRef.current.stop();
+      return;
     }
 
     try {
@@ -51,11 +63,22 @@ function FloatingMic({ onSearch, setIsRecording, language }) {
     }
   };
 
+  const stopRecording = () => {
+    if (recognitionRef.current && isRunningRef.current) {
+      recognitionRef.current.stop();
+    }
+  };
+
   return (
     <div className="floating-mic">
-      <button type="button" onClick={startRecording}>
-        🎤
-      </button>
+      <button
+  type="button"
+  onClick={startRecording}
+  className={isRunningRef.current ? "recording" : ""}
+>
+  🎤
+</button>
+
     </div>
   );
 }

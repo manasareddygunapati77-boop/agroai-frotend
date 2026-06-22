@@ -98,30 +98,34 @@ function FertilizerRecommendation({ weather, selectedLanguage = "en" }) {
       </select>
 
       {/* Nutrient Inputs */}
-      <input
-        type="number"
-        placeholder={selectedLanguage === "ta" ? "நைட்ரஜன் (N)" : "Nitrogen (N)"}
-        value={inputs.nitrogen}
-        onChange={(e) => handleChange("nitrogen", e.target.value)}
-      />
-      <input
-        type="number"
-        placeholder={selectedLanguage === "ta" ? "பாஸ்பரஸ் (P)" : "Phosphorus (P)"}
-        value={inputs.phosphorus}
-        onChange={(e) => handleChange("phosphorus", e.target.value)}
-      />
-      <input
-        type="number"
-        placeholder={selectedLanguage === "ta" ? "பொட்டாசியம் (K)" : "Potassium (K)"}
-        value={inputs.potassium}
-        onChange={(e) => handleChange("potassium", e.target.value)}
-      />
-      <input
-        type="number"
-        placeholder={selectedLanguage === "ta" ? "ஈரப்பதம் (%)" : "Moisture (%)"}
-        value={inputs.moisture}
-        onChange={(e) => handleChange("moisture", e.target.value)}
-      />
+  {/* Nutrient Inputs */}
+<div className="fertilizer-inputs">
+  <input
+    type="number"
+    placeholder={selectedLanguage === "ta" ? "நைட்ரஜன் (N)" : "Nitrogen (N)"}
+    value={inputs.nitrogen}
+    onChange={(e) => handleChange("nitrogen", e.target.value)}
+  />
+  <input
+    type="number"
+    placeholder={selectedLanguage === "ta" ? "பாஸ்பரஸ் (P)" : "Phosphorus (P)"}
+    value={inputs.phosphorus}
+    onChange={(e) => handleChange("phosphorus", e.target.value)}
+  />
+  <input
+    type="number"
+    placeholder={selectedLanguage === "ta" ? "பொட்டாசியம் (K)" : "Potassium (K)"}
+    value={inputs.potassium}
+    onChange={(e) => handleChange("potassium", e.target.value)}
+  />
+  <input
+    type="number"
+    placeholder={selectedLanguage === "ta" ? "ஈரப்பதம் (%)" : "Moisture (%)"}
+    value={inputs.moisture}
+    onChange={(e) => handleChange("moisture", e.target.value)}
+  />
+</div>
+
 
       <button onClick={handleFertilizerRecommendation}>
         {selectedLanguage === "ta" ? "பரிந்துரையை பெறவும்" : "Get Recommendation"}

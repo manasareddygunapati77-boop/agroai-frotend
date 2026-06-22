@@ -1,113 +1,155 @@
-import { useState } from "react";
-import { translations } from "../utils/translations"; // import dictionary
+import { useState, useEffect } from "react";
+import { translations } from "../utils/translations";
 import "../styles/Locationselector.css";
 
 function LocationSelector({ onLocationChange, selectedLanguage = "en" }) {
-  const [location, setLocation] = useState(null);
+  const [districts, setDistricts] = useState([]);
+  const [mandals, setMandals] = useState([]);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  const [selectedState, setSelectedState] = useState("");
   const [selectedDistrict, setSelectedDistrict] = useState("");
-  const [selectedVillage, setSelectedVillage] = useState("");
+  const [selectedMandal, setSelectedMandal] = useState("");
+  const [location, setLocation] = useState(null);
 
-  const t = translations[selectedLanguage]; // pick labels based on language
-
-  const locations = {
-    // ... your existing states/districts/villages
-  };
-
-  // GPS LOCATION
+  const t = translations[selectedLanguage];
   const getCurrentLocation = () => {
-    setError("");
+  setError("");
 
-    if (!navigator.geolocation) {
-      setError(
-        selectedLanguage === "ta"
-          ? "புவியியல் இடம் ஆதரிக்கப்படவில்லை."
-          : "Geolocation is not supported."
-      );
-      return;
-    }
+  if (!navigator.geolocation) {
+    setError(
+      selectedLanguage === "ta"
+        ? "புவியியல் இடம் ஆதரிக்கப்படவில்லை."
+        : "Geolocation is not supported."
+    );
+    return;
+  }
 
-    navigator.geolocation.getCurrentPosition(
-      async (position) => {
-        const lat = position.coords.latitude;
-        const lng = position.coords.longitude;
+  navigator.geolocation.getCurrentPosition(
+    async (position) => {
+      const lat = position.coords.latitude;
+      const lng = position.coords.longitude;
 
-        try {
-          const response = await fetch(
-            `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`
-          );
-          const data = await response.json();
+      try {
+        // Reverse geocode using Nominatim
+        const response = await fetch(
+          `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`
+        );
+        const data = await response.json();
 
-          const currentLocation = {
-            lat,
-            lng,
-            village:
-              data.address.village ||
-              data.address.hamlet ||
-              data.address.suburb ||
-              "Unknown",
-            district:
-              data.address.county ||
-              data.address.city ||
-              data.address.state_district ||
-              "Unknown",
-            state: data.address.state || "Unknown",
-            source: "GPS",
-          };
+        const detectedDistrict =
+          data.address.county ||
+          data.address.city ||
+          data.address.state_district ||
+          "Unknown";
 
-          setLocation(currentLocation);
-          onLocationChange?.(currentLocation);
-        } catch (err) {
-          console.error(err);
-          setError(
-            selectedLanguage === "ta"
-              ? "இட விவரங்களை கண்டறிய முடியவில்லை."
-              : "Unable to identify location details."
-          );
-        }
-      },
-      (error) => {
-        console.error(error);
+        const detectedMandal =
+          data.address.suburb ||
+          data.address.town ||
+          data.address.village ||
+          "Unknown";
+
+        const currentLocation = {
+          state: data.address.state || "TamilNadu",
+          district: detectedDistrict,
+          mandal: detectedMandal,
+          lat,
+          lng,
+          source: "GPS",
+        };
+
+        setLocation(currentLocation);
+        onLocationChange?.(currentLocation);
+
+        // Optionally: auto‑select dropdowns
+        setSelectedDistrict(detectedDistrict);
+        setSelectedMandal(detectedMandal);
+      } catch (err) {
+        console.error(err);
         setError(
           selectedLanguage === "ta"
-            ? "GPS இடத்தை பெற முடியவில்லை. கையேடு தேர்வைப் பயன்படுத்தவும்."
-            : "Unable to get GPS location. Use manual selection."
+            ? "இட விவரங்களை கண்டறிய முடியவில்லை."
+            : "Unable to identify location details."
         );
-      },
-      { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 }
-    );
+      }
+    },
+    (error) => {
+      console.error(error);
+      setError(
+        selectedLanguage === "ta"
+          ? "GPS இடத்தை பெற முடியவில்லை. கையேடு தேர்வைப் பயன்படுத்தவும்."
+          : "Unable to get GPS location. Use manual selection."
+      );
+    },
+    { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 }
+  );
+};
+
+
+  // 🔹 Fetch districts once
+  useEffect(() => {
+    const fetchDistricts = async () => {
+      setLoading(true);
+      try {
+        const res = await fetch(
+          "https://agritech-real-time-ai-backend.onrender.com/tn-districts"
+        ); // ✅ districts API
+        const data = await res.json();
+        setDistricts(data.districts || []); // API should return { "districts": ["Thanjavur", "Madurai", ...] }
+      } catch (err) {
+        console.error(err);
+        setError(
+          selectedLanguage === "ta"
+            ? "மாவட்டங்களை ஏற்ற முடியவில்லை."
+            : "Failed to load districts."
+        );
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchDistricts();
+  }, [selectedLanguage]);
+
+  // 🔹 When district changes, fetch mandals
+  const handleDistrictChange = async (e) => {
+    const districtName = e.target.value;
+    setSelectedDistrict(districtName);
+    setSelectedMandal("");
+    setMandals([]);
+    setLocation(null);
+
+    if (!districtName) return;
+
+    setLoading(true);
+    try {
+      const res = await fetch(
+        `https://agritech-real-time-ai-backend.onrender.com/tn-taluks/${encodeURIComponent(
+          districtName
+        )}`
+      ); // ✅ mandals API
+      const data = await res.json();
+      setMandals(data.taluks || []); // API should return { "taluks": ["Kumbakonam", "Orathanadu", ...] }
+    } catch (err) {
+      console.error(err);
+      setError(
+        selectedLanguage === "ta"
+          ? "தாலுகாவை ஏற்ற முடியவில்லை."
+          : "Failed to load mandals."
+      );
+    } finally {
+      setLoading(false);
+    }
   };
 
-  // STATE CHANGE
-  const handleStateChange = (e) => {
-    setSelectedState(e.target.value);
-    setSelectedDistrict("");
-    setSelectedVillage("");
-  };
-
-  // DISTRICT CHANGE
-  const handleDistrictChange = (e) => {
-    setSelectedDistrict(e.target.value);
-    setSelectedVillage("");
-  };
-
-  // VILLAGE CHANGE
-  const handleVillageChange = (e) => {
-    const villageName = e.target.value;
-    setSelectedVillage(villageName);
-
-    const villageData = locations[selectedState][selectedDistrict].find(
-      (item) => item.village === villageName
-    );
+  // 🔹 When mandal selected
+  const handleMandalChange = (e) => {
+    const mandalName = e.target.value;
+    setSelectedMandal(mandalName);
 
     const manualLocation = {
-      state: selectedState,
+      state: "TamilNadu",
       district: selectedDistrict,
-      village: villageData.village,
-      lat: villageData.lat,
-      lng: villageData.lng,
+      mandal: mandalName,
       source: "Manual",
     };
 
@@ -119,82 +161,79 @@ function LocationSelector({ onLocationChange, selectedLanguage = "en" }) {
     <div className="location-selector">
       <h2>{t.locationSelection}</h2>
 
-      {/* GPS BUTTON */}
-      <button className="gps-btn" onClick={getCurrentLocation}>
-        {selectedLanguage === "ta" ? "தற்போதைய இடத்தைப் பயன்படுத்தவும்" : "Use Current Location"}
-      </button>
+      {loading && (
+        <p>{selectedLanguage === "ta" ? "ஏற்றுகிறது..." : "Loading..."}</p>
+      )}
+      {error && <p className="error-text">{error}</p>}
 
-      <div className="divider">
-        <span>{selectedLanguage === "ta" ? "அல்லது" : "OR"}</span>
-      </div>
-
-      {/* STATE */}
-      <select value={selectedState} onChange={handleStateChange}>
+      {/* DISTRICT */}
+      <select value={selectedDistrict} onChange={handleDistrictChange}>
         <option value="">
-          {selectedLanguage === "ta" ? "மாநிலத்தைத் தேர்ந்தெடுக்கவும்" : "Select State"}
+          {selectedLanguage === "ta"
+            ? "மாவட்டத்தைத் தேர்ந்தெடுக்கவும்"
+            : "Select District"}
         </option>
-        {Object.keys(locations).map((state) => (
-          <option key={state} value={state}>
-            {state}
+        {districts.map((district) => (
+          <option key={district} value={district}>
+            {district}
           </option>
         ))}
       </select>
 
-      {/* DISTRICT */}
-      {selectedState && (
-        <select value={selectedDistrict} onChange={handleDistrictChange}>
-          <option value="">
-            {selectedLanguage === "ta" ? "மாவட்டத்தைத் தேர்ந்தெடுக்கவும்" : "Select District"}
-          </option>
-          {Object.keys(locations[selectedState]).map((district) => (
-            <option key={district} value={district}>
-              {district}
-            </option>
-          ))}
-        </select>
-      )}
-
-      {/* VILLAGE */}
+      {/* TALUKA / MANDAL */}
       {selectedDistrict && (
-        <select value={selectedVillage} onChange={handleVillageChange}>
+        <select value={selectedMandal} onChange={handleMandalChange}>
           <option value="">
-            {selectedLanguage === "ta" ? "கிராமத்தைத் தேர்ந்தெடுக்கவும்" : "Select Village"}
+            {selectedLanguage === "ta"
+              ? "தாலுகாவைத் தேர்ந்தெடுக்கவும்"
+              : "Select Taluka"}
           </option>
-          {locations[selectedState][selectedDistrict].map((village) => (
-            <option key={village.village} value={village.village}>
-              {village.village}
+          {mandals.map((mandal) => (
+            <option key={mandal} value={mandal}>
+              {mandal}
             </option>
           ))}
         </select>
       )}
-
-      {/* ERROR */}
-      {error && <p className="error-text">{error}</p>}
 
       {/* LOCATION DETAILS */}
       {location && (
         <div className="location-details">
-          <h3>{selectedLanguage === "ta" ? "தேர்ந்தெடுக்கப்பட்ட இடம்" : "Selected Location"}</h3>
+          <h3>
+            {selectedLanguage === "ta"
+              ? "தேர்ந்தெடுக்கப்பட்ட இடம்"
+              : "Selected Location"}
+          </h3>
           <p>
-            <strong>{selectedLanguage === "ta" ? "மாநிலம்:" : "State:"}</strong> {location.state}
+            <strong>{selectedLanguage === "ta" ? "மாநிலம்:" : "State:"}</strong>{" "}
+            {location.state}
           </p>
           <p>
-            <strong>{selectedLanguage === "ta" ? "மாவட்டம்:" : "District:"}</strong> {location.district}
+            <strong>
+              {selectedLanguage === "ta" ? "மாவட்டம்:" : "District:"}
+            </strong>{" "}
+            {location.district}
           </p>
           <p>
-            <strong>{selectedLanguage === "ta" ? "கிராமம்:" : "Village:"}</strong> {location.village}
+            <strong>
+              {selectedLanguage === "ta" ? "தாலுகா:" : "Taluka:"}
+            </strong>{" "}
+            {location.mandal}
           </p>
           <p>
-            <strong>{selectedLanguage === "ta" ? "அட்சரேகை:" : "Latitude:"}</strong> {location.lat.toFixed(6)}
-          </p>
-          <p>
-            <strong>{selectedLanguage === "ta" ? "நெடுவரை:" : "Longitude:"}</strong> {location.lng.toFixed(6)}
-          </p>
-          <p>
-            <strong>{selectedLanguage === "ta" ? "மூலம்:" : "Source:"}</strong> {location.source}
+            <strong>
+              {selectedLanguage === "ta" ? "மூலம்:" : "Source:"}
+            </strong>{" "}
+            {location.source}
           </p>
         </div>
       )}
+      <button className="gps-btn" onClick={getCurrentLocation}>
+  {selectedLanguage === "ta"
+    ? "தற்போதைய இடத்தைப் பயன்படுத்தவும்"
+    : "Use Current Location"}
+</button>
+
     </div>
   );
 }

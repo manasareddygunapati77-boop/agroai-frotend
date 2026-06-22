@@ -89,6 +89,7 @@ function IrrigationRecommendation({ location, weather, selectedLanguage = "en" }
       </select>
 
       {/* Farm Size */}
+      <div className="irrigation-inputs">
       <input
         type="number"
         placeholder={selectedLanguage === "ta" ? "பண்ணை அளவு (ஏக்கர்)" : "Farm Size (acres)"}
@@ -102,7 +103,7 @@ function IrrigationRecommendation({ location, weather, selectedLanguage = "en" }
         placeholder={selectedLanguage === "ta" ? "மண் ஈரப்பதம் (%)" : "Soil Moisture (%)"}
         value={inputs.soil_moisture_percent}
         onChange={(e) => handleChange("soil_moisture_percent", e.target.value)}
-      />
+      /></div>
 
       {/* Groundwater Availability */}
       <label>{selectedLanguage === "ta" ? "நிலத்தடி நீர் கிடைக்கும் நிலை:" : "Groundwater Availability:"}</label>

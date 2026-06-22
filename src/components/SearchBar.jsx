@@ -21,6 +21,7 @@ function SearchBar({ query, setQuery, onSearch, selectedLanguage = "en" }) {
       <button onClick={() => onSearch(query)}>
         {selectedLanguage === "ta" ? "தேடல்" : "Search"}
       </button>
+      
     </div>
   );
 }

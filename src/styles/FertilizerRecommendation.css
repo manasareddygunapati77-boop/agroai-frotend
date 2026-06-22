@@ -1,70 +1,111 @@
-/* src/styles/FertilizerRecommendation.css */
-
 .fertilizer-card {
-  background: linear-gradient(135deg, #f0fff4, #e6fffa);
-  border: 1px solid #c6f6d5;
+  background: #f1f8e9; /* matches dashboard’s soft green tone */
+  border: 1px solid #c8e6c9; /* light green border for definition */
   border-radius: 12px;
   padding: 20px;
-  margin: 20px 0;
-  box-shadow: 0 4px 8px rgba(0, 128, 0, 0.1);
+  margin: 20px auto;
+  max-width: 600px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05); /* softer shadow */
   font-family: "Segoe UI", sans-serif;
 }
 
 .fertilizer-card h2 {
-  color: #2f855a;
-  margin-bottom: 15px;
-  font-size: 1.4rem;
+  color: #2e7d32;
+  margin-bottom: 12px;
+  font-weight: 700;
   text-align: center;
 }
 
+/* Labels */
 .fertilizer-card label {
   display: block;
   margin-top: 10px;
   font-weight: 600;
-  color: #22543d;
+  color: #2f3e2f;
 }
 
-.fertilizer-card input,
+/* Dropdowns stacked */
 .fertilizer-card select {
   width: 100%;
   padding: 8px;
   margin-top: 6px;
   margin-bottom: 12px;
-  border: 1px solid #c6f6d5;
+  border: 1.5px solid #4b6043;
   border-radius: 6px;
-  font-size: 0.95rem;
+  background-color: #e9f3e4;
+  color: #2f3e2f;
+  font-size: 14px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  transition: all 0.2s ease-in-out;
 }
 
+.fertilizer-card select:focus {
+  outline: none;
+  border-color: #2e7d32;
+  background-color: #f5fff2;
+}
+
+/* Nutrient Inputs side by side */
+.fertilizer-inputs {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.fertilizer-inputs input {
+  flex: 1 1 45%;
+  padding: 8px;
+  border: 1.5px solid #4b6043;
+  border-radius: 6px;
+  background-color: #e9f3e4;
+  color: #2f3e2f;
+  font-size: 14px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  transition: all 0.2s ease-in-out;
+}
+
+.fertilizer-inputs input:focus {
+  outline: none;
+  border-color: #2e7d32;
+  background-color: #f5fff2;
+}
+
+/* Button */
 .fertilizer-card button {
-  background-color: #38a169;
+  background-color: #2e7d32;
   color: white;
   border: none;
   padding: 10px 16px;
   border-radius: 6px;
   cursor: pointer;
-  font-size: 1rem;
-  transition: background-color 0.2s ease;
+  font-weight: 600;
+  font-size: 14px;
+  transition: background-color 0.2s ease-in-out, transform 0.1s ease-in-out;
   width: 100%;
+  margin-top: 10px;
 }
 
 .fertilizer-card button:hover {
-  background-color: #2f855a;
+  background-color: #1b5e20;
+  transform: scale(1.05);
 }
 
+/* Result box */
 .fertilizer-result {
   margin-top: 15px;
   padding: 12px;
-  background: #f0fff4;
-  border: 1px solid #9ae6b4;
+  background: #f4fff4;
+  border-left: 5px solid #2e7d32;
   border-radius: 8px;
 }
 
 .fertilizer-result h3 {
   margin-bottom: 8px;
-  color: #276749;
+  color: #1b5e20;
 }
 
 .fertilizer-result p {
-  font-size: 1rem;
-  color: #22543d;
+  font-size: 14px;
+  color: #2f3e2f;
 }

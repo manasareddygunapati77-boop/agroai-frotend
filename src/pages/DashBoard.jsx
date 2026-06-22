@@ -9,6 +9,7 @@ import IrrigationRecommendation from "../components/IrrigationRecommendation";
 import UploadCard from "../components/UploadCard";
 import DiagnosisCard from "../components/DiagnosisCard";
 import FloatingMic from "../components/FloatingMic";
+import SearchHistory from "../components/SearchHistory";
 import { translations } from "../utils/translations";
 
 import { searchCropOrDisease } from "../services/searchService";
@@ -96,6 +97,34 @@ function Dashboard() {
       return text;
     }
   };
+  // SPEAK ALOUD (Tamil or English)
+const handleSpeak = (text, lang = selectedLanguage) => {
+  if (!text) return;
+  const utterance = new SpeechSynthesisUtterance(text);
+  utterance.lang = lang === "ta" ? "ta-IN" : "en-IN"; // Tamil or English voice
+  utterance.rate = 1; // normal speed
+  utterance.pitch = 1; // normal pitch
+  speechSynthesis.speak(utterance);
+};
+// SPEECH CONTROLS
+const handlePause = () => {
+  if (speechSynthesis.speaking && !speechSynthesis.paused) {
+    speechSynthesis.pause();
+  }
+};
+
+const handleResume = () => {
+  if (speechSynthesis.paused) {
+    speechSynthesis.resume();
+  }
+};
+
+const handleStop = () => {
+  if (speechSynthesis.speaking) {
+    speechSynthesis.cancel();
+  }
+};
+
 
   // VOICE SEARCH
   const handleVoiceSearch = async (spokenText) => {
@@ -172,23 +201,42 @@ function Dashboard() {
       />
 
       {/* Advisory Results */}
-      {searchResults && (
-        <div className="search-result-card">
-          <h2>{t.advisory}</h2>
-          <div className="advisory-content">
-            {(selectedLanguage === "ta" ? translatedText : searchResults)
-              .split("\n")
-              .filter((line) => line.trim())
-              .map((line, index) => (
-                <p key={index}>{line}</p>
-              ))}
-          </div>
-          <button onClick={() => handleTranslateToTamil(searchResults)}>
-            {t.translate}
-          </button>
-        </div>
-      )}
+      {/* Advisory Results */}
+{/* Advisory Results */}
+{searchResults && (
+  <div className="search-result-card">
+    <h2>{t.advisory}</h2>
+    <div className="advisory-content">
+      {(selectedLanguage === "ta" ? translatedText : searchResults)
+        .split("\n")
+        .filter((line) => line.trim())
+        .map((line, index) => (
+          <p key={index}>{line}</p>
+        ))}
+    </div>
+    <div className="advisory-actions">
+      <button onClick={() => handleTranslateToTamil(searchResults)}>
+        {t.translate}
+      </button>
+      <button
+        onClick={() =>
+          handleSpeak(
+            selectedLanguage === "ta" ? translatedText : searchResults,
+            selectedLanguage
+          )
+        }
+      >
+        {selectedLanguage === "ta" ? "🔊 தமிழில் வாசிக்க" : "🔊 Read Aloud"}
+      </button>
+      <button onClick={handlePause}>⏸ Pause</button>
+      <button onClick={handleResume}>▶ Resume</button>
+      <button onClick={handleStop}>⏹ Stop</button>
+    </div>
+  </div>
+)}
 
+
+<FloatingMic setQuery={setQuery} setIsRecording={setIsRecording} selectedLanguage={selectedLanguage} />
       {/* Crop Recommendation */}
       <CropRecommendation location={location} selectedLanguage={selectedLanguage} />
       <FertilizerRecommendation weather={weather} selectedLanguage={selectedLanguage} />
@@ -211,6 +259,8 @@ function Dashboard() {
         setIsRecording={setIsRecording}
         language={selectedLanguage === "ta" ? "ta-IN" : "en-IN"}
       />
+      <SearchHistory selectedLanguage={selectedLanguage} />
+
     </div>
   );
 }

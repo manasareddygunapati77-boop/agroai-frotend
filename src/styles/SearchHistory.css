@@ -1,0 +1,31 @@
+.history-card {
+  margin: 30px auto;                /* more breathing room */
+  padding: 20px;
+  max-width: 600px;
+  background: #f1f8e9;              /* soft green background */
+  border: 1px solid #c8e6c9;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  font-family: "Segoe UI", sans-serif;
+  text-align: center;
+}
+
+/* Themed button */
+.history-card button {
+  background: #2e7d32;              /* dashboard green */
+  color: white;
+  border: none;
+  padding: 12px 18px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 14px;
+  transition: background-color 0.2s ease-in-out, transform 0.1s ease-in-out;
+  width: 100%;
+  margin-top: 20px;                 /* adds space from previous card */
+}
+
+.history-card button:hover {
+  background: #1b5e20;
+  transform: scale(1.05);
+}
