@@ -1,5 +1,5 @@
 import { useState } from "react";
-import "../styles/LocationSelector.css";
+import "../styles/Locationselector.css";
 
 function LocationSelector({ onLocationChange }) {
   const [location, setLocation] = useState(null);
