@@ -1,5 +1,5 @@
 import { useRef } from "react";
-import "../styles/UploadCard.css";
+import "../styles/Uploadcard.css";
 
 function UploadCard({
   onImageUpload,
