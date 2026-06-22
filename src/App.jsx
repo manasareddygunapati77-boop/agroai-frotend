@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Routes, Route } from "react-router-dom";
 
 import SplashScreen from "./pages/SplashScreen";
-import Dashboard from "./pages/Dashboard";
+import Dashboard from "./pages/DashBoard";
 import HistoryPage from "./components/HistoryPage";
 
 function App() {
