@@ -1,18 +1,17 @@
 import "../styles/DiagnosisCard.css";
+import { translations } from "../utils/translations";
 
-function DiagnosisCard({
-  result,
-}) {
+function DiagnosisCard({ result, selectedLanguage = "en" }) {
+  const t = translations[selectedLanguage];
+
   if (!result) {
     return (
       <div className="diagnosis-card">
-        <h2>
-          AI Diagnosis Results
-        </h2>
-
+        <h2>{t.disease}</h2>
         <p>
-          Upload an image to
-          diagnose crop disease.
+          {selectedLanguage === "ta"
+            ? "பயிர் நோயை கண்டறிய படத்தை பதிவேற்றவும்."
+            : "Upload an image to diagnose crop disease."}
         </p>
       </div>
     );
@@ -20,25 +19,17 @@ function DiagnosisCard({
 
   return (
     <div className="diagnosis-card">
-      <h2>
-        AI Diagnosis Results
-      </h2>
+      <h2>{t.disease}</h2>
 
       <div className="diagnosis-result">
-        <h3>
-          {result.disease}
-        </h3>
+        <h3>{result.disease}</h3>
 
         <p>
-          Confidence:
-          {" "}
-          {result.confidence}
+          {t.confidence}: {result.confidence}
         </p>
 
         <p>
-          Status:
-          {" "}
-          {result.status}
+          {t.status}: {result.status}
         </p>
       </div>
     </div>

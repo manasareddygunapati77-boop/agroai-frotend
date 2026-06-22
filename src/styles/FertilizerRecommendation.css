@@ -1,0 +1,70 @@
+/* src/styles/FertilizerRecommendation.css */
+
+.fertilizer-card {
+  background: linear-gradient(135deg, #f0fff4, #e6fffa);
+  border: 1px solid #c6f6d5;
+  border-radius: 12px;
+  padding: 20px;
+  margin: 20px 0;
+  box-shadow: 0 4px 8px rgba(0, 128, 0, 0.1);
+  font-family: "Segoe UI", sans-serif;
+}
+
+.fertilizer-card h2 {
+  color: #2f855a;
+  margin-bottom: 15px;
+  font-size: 1.4rem;
+  text-align: center;
+}
+
+.fertilizer-card label {
+  display: block;
+  margin-top: 10px;
+  font-weight: 600;
+  color: #22543d;
+}
+
+.fertilizer-card input,
+.fertilizer-card select {
+  width: 100%;
+  padding: 8px;
+  margin-top: 6px;
+  margin-bottom: 12px;
+  border: 1px solid #c6f6d5;
+  border-radius: 6px;
+  font-size: 0.95rem;
+}
+
+.fertilizer-card button {
+  background-color: #38a169;
+  color: white;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background-color 0.2s ease;
+  width: 100%;
+}
+
+.fertilizer-card button:hover {
+  background-color: #2f855a;
+}
+
+.fertilizer-result {
+  margin-top: 15px;
+  padding: 12px;
+  background: #f0fff4;
+  border: 1px solid #9ae6b4;
+  border-radius: 8px;
+}
+
+.fertilizer-result h3 {
+  margin-bottom: 8px;
+  color: #276749;
+}
+
+.fertilizer-result p {
+  font-size: 1rem;
+  color: #22543d;
+}

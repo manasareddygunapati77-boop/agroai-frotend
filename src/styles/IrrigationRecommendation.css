@@ -1,0 +1,67 @@
+.irrigation-card {
+  background: #f9fff9; /* soft green background */
+  border: 1px solid #cce5cc;
+  border-radius: 10px;
+  padding: 20px;
+  margin: 20px 0;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  font-family: "Segoe UI", sans-serif;
+}
+
+.irrigation-card h2 {
+  color: #2e7d32; /* dark green heading */
+  margin-bottom: 15px;
+  font-size: 1.4rem;
+}
+
+.irrigation-card input,
+.irrigation-card select {
+  width: 100%;
+  padding: 10px;
+  margin: 8px 0;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  transition: border-color 0.2s ease;
+}
+
+.irrigation-card input:focus,
+.irrigation-card select:focus {
+  border-color: #2e7d32;
+  outline: none;
+}
+
+.irrigation-card button {
+  background: #2e7d32;
+  color: #fff;
+  border: none;
+  padding: 12px 18px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 1rem;
+  margin-top: 10px;
+  transition: background 0.3s ease;
+}
+
+.irrigation-card button:hover {
+  background: #1b5e20;
+}
+
+.irrigation-result {
+  margin-top: 20px;
+  padding: 15px;
+  background: #e8f5e9;
+  border-left: 4px solid #2e7d32;
+  border-radius: 6px;
+}
+
+.irrigation-result h3 {
+  margin-bottom: 10px;
+  color: #1b5e20;
+}
+
+.irrigation-result p {
+  margin: 5px 0;
+  font-size: 1rem;
+  line-height: 1.4;
+}

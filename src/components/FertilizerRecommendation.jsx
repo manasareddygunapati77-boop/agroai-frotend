@@ -1,166 +1,140 @@
 import { useState } from "react";
-
-import { getWeather } from "../services/weather";
 import { getFertilizerRecommendation } from "../services/fertilizerRecommendation";
+import { translations } from "../utils/translations"; // import dictionary
+import "../styles/FertilizerRecommendation.css";
 
-function FertilizerRecommendation({
-  location,
-}) {
-  const [formData, setFormData] =
-    useState({
-      nitrogen: "",
-      phosphorous: "",
-      potassium: "",
-      soil_type: "",
-      crop_type: "",
-    });
+function FertilizerRecommendation({ weather, selectedLanguage = "en" }) {
+  const [inputs, setInputs] = useState({
+    crop_type: "",
+    soil_type: "Loamy",
+    nitrogen: "",
+    phosphorus: "",
+    potassium: "",
+    moisture: "",
+  });
 
-  const [result, setResult] =
-    useState(null);
+  const [result, setResult] = useState(null);
+  const t = translations[selectedLanguage];
 
-  const [loading, setLoading] =
-    useState(false);
-
-  const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]:
-        e.target.value,
-    });
+  const handleChange = (field, value) => {
+    setInputs({ ...inputs, [field]: value });
   };
 
-  const handleSubmit = async () => {
-    try {
-      setLoading(true);
-
-      const weather =
-        await getWeather(location);
-
-      const payload = {
-        temperature:
-          weather.temperature,
-
-        humidity:
-          weather.humidity,
-
-        moisture:
-          weather.soil_moisture_0_1cm ??
-          weather.humidity,
-
-        nitrogen:
-          Number(
-            formData.nitrogen
-          ),
-
-        phosphorous:
-          Number(
-            formData.phosphorous
-          ),
-
-        potassium:
-          Number(
-            formData.potassium
-          ),
-
-        soil_type:
-          formData.soil_type,
-
-        crop_type:
-          formData.crop_type,
-      };
-
-      const response =
-        await getFertilizerRecommendation(
-          payload
-        );
-
-      setResult(response);
-
-    } catch (error) {
-      console.error(error);
-
+  const handleFertilizerRecommendation = async () => {
+    if (!inputs.crop_type || !inputs.soil_type) {
       alert(
-        "Failed to get fertilizer recommendation"
+        selectedLanguage === "ta"
+          ? "🌱 முதலில் பயிர் மற்றும் மண் வகையைத் தேர்ந்தெடுக்கவும்!"
+          : "🌱 Please select crop and soil type!"
       );
-    } finally {
-      setLoading(false);
+      return;
+    }
+
+    try {
+      const res = await getFertilizerRecommendation({
+        temperature: weather?.temperature || 0,
+        humidity: weather?.humidity || 0,
+        moisture: Number(inputs.moisture || 0),
+        nitrogen: Number(inputs.nitrogen || 0),
+        potassium: Number(inputs.potassium || 0),
+        phosphorous: Number(inputs.phosphorus || 0), // ✅ spelling fixed
+        soil_type: inputs.soil_type,
+        crop_type: inputs.crop_type,
+      });
+      setResult(res);
+    } catch (err) {
+      console.error("Fertilizer API error:", err);
+      alert(
+        selectedLanguage === "ta"
+          ? "உர பரிந்துரை தோல்வியடைந்தது"
+          : "Fertilizer recommendation failed"
+      );
     }
   };
 
   return (
     <div className="fertilizer-card">
+      <h2>🧪 {t.fertilizer}</h2>
 
-      <h2>
-        Fertilizer Recommendation
-      </h2>
-
-      <p>
-        Location:
-        {" "}
-        {location || "Not selected"}
-      </p>
-
-      <input
-        type="number"
-        name="nitrogen"
-        placeholder="Nitrogen (N)"
-        onChange={handleChange}
-      />
-
-      <input
-        type="number"
-        name="phosphorous"
-        placeholder="Phosphorous (P)"
-        onChange={handleChange}
-      />
-
-      <input
-        type="number"
-        name="potassium"
-        placeholder="Potassium (K)"
-        onChange={handleChange}
-      />
-
-      <input
-        type="text"
-        name="soil_type"
-        placeholder="Soil Type"
-        onChange={handleChange}
-      />
-
-      <input
-        type="text"
-        name="crop_type"
-        placeholder="Crop Type"
-        onChange={handleChange}
-      />
-
-      <button
-        onClick={handleSubmit}
+      {/* Crop Type Dropdown */}
+      <label>{selectedLanguage === "ta" ? "பயிர் வகை:" : "Crop Type:"}</label>
+      <select
+        value={inputs.crop_type}
+        onChange={(e) => handleChange("crop_type", e.target.value)}
       >
-        {loading
-          ? "Loading..."
-          : "Get Recommendation"}
+        <option value="">
+          {selectedLanguage === "ta" ? "பயிரைத் தேர்ந்தெடுக்கவும்" : "Select Crop"}
+        </option>
+        {[
+          "Maize",
+          "Sugarcane",
+          "Cotton",
+          "Tobacco",
+          "Paddy",
+          "Barley",
+          "Wheat",
+          "Millets",
+          "Oil seeds",
+          "Pulses",
+          "Ground Nuts",
+        ].map((crop) => (
+          <option key={crop} value={crop}>
+            {crop}
+          </option>
+        ))}
+      </select>
+
+      {/* Soil Type Dropdown */}
+      <label>{selectedLanguage === "ta" ? "மண் வகை:" : "Soil Type:"}</label>
+      <select
+        value={inputs.soil_type}
+        onChange={(e) => handleChange("soil_type", e.target.value)}
+      >
+        {["Sandy", "Loamy", "Black", "Red", "Clayey"].map((soil) => (
+          <option key={soil} value={soil}>
+            {soil}
+          </option>
+        ))}
+      </select>
+
+      {/* Nutrient Inputs */}
+      <input
+        type="number"
+        placeholder={selectedLanguage === "ta" ? "நைட்ரஜன் (N)" : "Nitrogen (N)"}
+        value={inputs.nitrogen}
+        onChange={(e) => handleChange("nitrogen", e.target.value)}
+      />
+      <input
+        type="number"
+        placeholder={selectedLanguage === "ta" ? "பாஸ்பரஸ் (P)" : "Phosphorus (P)"}
+        value={inputs.phosphorus}
+        onChange={(e) => handleChange("phosphorus", e.target.value)}
+      />
+      <input
+        type="number"
+        placeholder={selectedLanguage === "ta" ? "பொட்டாசியம் (K)" : "Potassium (K)"}
+        value={inputs.potassium}
+        onChange={(e) => handleChange("potassium", e.target.value)}
+      />
+      <input
+        type="number"
+        placeholder={selectedLanguage === "ta" ? "ஈரப்பதம் (%)" : "Moisture (%)"}
+        value={inputs.moisture}
+        onChange={(e) => handleChange("moisture", e.target.value)}
+      />
+
+      <button onClick={handleFertilizerRecommendation}>
+        {selectedLanguage === "ta" ? "பரிந்துரையை பெறவும்" : "Get Recommendation"}
       </button>
 
       {result && (
-        <div
-          style={{
-            marginTop: "20px",
-          }}
-        >
-          <h3>
-            Recommended Fertilizer
-          </h3>
-
+        <div className="fertilizer-result">
+          <h3>✅ {selectedLanguage === "ta" ? "பரிந்துரை" : "Recommendation"}</h3>
           <p>
-            {
-              result.recommended_fertilizer
-            }
-          </p>
-
-          <p>
-            {result.message}
+            {result.recommended_fertilizer ||
+              (selectedLanguage === "ta"
+                ? "பரிந்துரை கிடைக்கவில்லை"
+                : "No recommendation available")}
           </p>
         </div>
       )}

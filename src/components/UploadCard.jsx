@@ -1,20 +1,17 @@
 import { useRef } from "react";
+import { translations } from "../utils/translations"; // import dictionary
 import "../styles/Uploadcard.css";
 
-function UploadCard({
-  onImageUpload,
-  uploadedImage,
-}) {
+function UploadCard({ onImageUpload, uploadedImage, selectedLanguage = "en" }) {
   const fileRef = useRef();
+  const t = translations[selectedLanguage];
 
   const handleClick = () => {
     fileRef.current.click();
   };
 
   const handleChange = (e) => {
-    const file =
-      e.target.files?.[0];
-
+    const file = e.target.files?.[0];
     if (file) {
       onImageUpload(file);
     }
@@ -22,27 +19,18 @@ function UploadCard({
 
   return (
     <div className="upload-card">
-
       {uploadedImage ? (
-        <img
-          src={uploadedImage}
-          alt="crop"
-          className="preview"
-        />
+        <img src={uploadedImage} alt="crop" className="preview" />
       ) : (
-        <div className="upload-icon">
-          📤
-        </div>
+        <div className="upload-icon">📤</div>
       )}
 
       <h3>
-        Upload Crop Image
+        {selectedLanguage === "ta" ? "பயிர் படத்தை பதிவேற்றவும்" : "Upload Crop Image"}
       </h3>
 
-      <button
-        onClick={handleClick}
-      >
-        Choose Image
+      <button onClick={handleClick}>
+        {selectedLanguage === "ta" ? "படத்தைத் தேர்ந்தெடுக்கவும்" : "Choose Image"}
       </button>
 
       <input
@@ -52,7 +40,6 @@ function UploadCard({
         hidden
         onChange={handleChange}
       />
-
     </div>
   );
 }

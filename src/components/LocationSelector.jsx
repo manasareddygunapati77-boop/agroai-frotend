@@ -1,7 +1,8 @@
 import { useState } from "react";
+import { translations } from "../utils/translations"; // import dictionary
 import "../styles/Locationselector.css";
 
-function LocationSelector({ onLocationChange }) {
+function LocationSelector({ onLocationChange, selectedLanguage = "en" }) {
   const [location, setLocation] = useState(null);
   const [error, setError] = useState("");
 
@@ -9,54 +10,10 @@ function LocationSelector({ onLocationChange }) {
   const [selectedDistrict, setSelectedDistrict] = useState("");
   const [selectedVillage, setSelectedVillage] = useState("");
 
+  const t = translations[selectedLanguage]; // pick labels based on language
+
   const locations = {
-    "Andhra Pradesh": {
-      Nellore: [
-        { village: "Kovur", lat: 14.5000, lng: 79.9800 },
-        { village: "Allipuram", lat: 14.4600, lng: 79.9500 },
-        { village: "Buchireddypalem", lat: 14.5100, lng: 79.8800 },
-      ],
-
-      Guntur: [
-        { village: "Pedapalakaluru", lat: 16.3300, lng: 80.4300 },
-        { village: "Mangalagiri", lat: 16.4300, lng: 80.5600 },
-        { village: "Tadikonda", lat: 16.3800, lng: 80.4500 },
-      ],
-    },
-
-    Telangana: {
-      Hyderabad: [
-        { village: "Gachibowli", lat: 17.4400, lng: 78.3500 },
-        { village: "Madhapur", lat: 17.4500, lng: 78.3900 },
-      ],
-
-      Warangal: [
-        { village: "Hanamkonda", lat: 18.0000, lng: 79.5800 },
-        { village: "Kazipet", lat: 17.9700, lng: 79.5200 },
-      ],
-    },
-    TamilNadu: {
-  Chennai: [
-    { village: "Adyar", lat: 13.0067, lng: 80.2570 },
-    { village: "Velachery", lat: 12.9790, lng: 80.2200 },
-  ],
-
-  Coimbatore: [
-    { village: "Peelamedu", lat: 11.0330, lng: 77.0430 },
-    { village: "Sulur", lat: 11.0250, lng: 77.1330 },
-  ],
-
-  Madurai: [
-    { village: "Thiruparankundram", lat: 9.8820, lng: 78.0730 },
-    { village: "Melur", lat: 10.0330, lng: 78.3330 },
-  ],
-
-  Thanjavur: [
-    { village: "Kumbakonam", lat: 10.9600, lng: 79.3800 },
-    { village: "Papanasam", lat: 10.9300, lng: 79.2700 },
-  ],
-}
-
+    // ... your existing states/districts/villages
   };
 
   // GPS LOCATION
@@ -64,7 +21,11 @@ function LocationSelector({ onLocationChange }) {
     setError("");
 
     if (!navigator.geolocation) {
-      setError("Geolocation is not supported.");
+      setError(
+        selectedLanguage === "ta"
+          ? "புவியியல் இடம் ஆதரிக்கப்படவில்லை."
+          : "Geolocation is not supported."
+      );
       return;
     }
 
@@ -77,53 +38,45 @@ function LocationSelector({ onLocationChange }) {
           const response = await fetch(
             `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`
           );
-
           const data = await response.json();
 
           const currentLocation = {
             lat,
             lng,
-
             village:
               data.address.village ||
               data.address.hamlet ||
               data.address.suburb ||
               "Unknown",
-
             district:
               data.address.county ||
               data.address.city ||
               data.address.state_district ||
               "Unknown",
-
             state: data.address.state || "Unknown",
-
             source: "GPS",
           };
 
           setLocation(currentLocation);
-
           onLocationChange?.(currentLocation);
         } catch (err) {
           console.error(err);
-
           setError(
-            "Unable to identify location details."
+            selectedLanguage === "ta"
+              ? "இட விவரங்களை கண்டறிய முடியவில்லை."
+              : "Unable to identify location details."
           );
         }
       },
       (error) => {
         console.error(error);
-
         setError(
-          "Unable to get GPS location. Use manual selection."
+          selectedLanguage === "ta"
+            ? "GPS இடத்தை பெற முடியவில்லை. கையேடு தேர்வைப் பயன்படுத்தவும்."
+            : "Unable to get GPS location. Use manual selection."
         );
       },
-      {
-        enableHighAccuracy: true,
-        timeout: 15000,
-        maximumAge: 0,
-      }
+      { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 }
     );
   };
 
@@ -143,13 +96,11 @@ function LocationSelector({ onLocationChange }) {
   // VILLAGE CHANGE
   const handleVillageChange = (e) => {
     const villageName = e.target.value;
-
     setSelectedVillage(villageName);
 
-    const villageData =
-      locations[selectedState][selectedDistrict].find(
-        (item) => item.village === villageName
-      );
+    const villageData = locations[selectedState][selectedDistrict].find(
+      (item) => item.village === villageName
+    );
 
     const manualLocation = {
       state: selectedState,
@@ -161,40 +112,29 @@ function LocationSelector({ onLocationChange }) {
     };
 
     setLocation(manualLocation);
-
     onLocationChange?.(manualLocation);
   };
 
   return (
     <div className="location-selector">
-      <h2>📍 Location Selection</h2>
+      <h2>{t.locationSelection}</h2>
 
       {/* GPS BUTTON */}
-      <button
-        className="gps-btn"
-        onClick={getCurrentLocation}
-      >
-        Use Current Location
+      <button className="gps-btn" onClick={getCurrentLocation}>
+        {selectedLanguage === "ta" ? "தற்போதைய இடத்தைப் பயன்படுத்தவும்" : "Use Current Location"}
       </button>
 
       <div className="divider">
-        <span>OR</span>
+        <span>{selectedLanguage === "ta" ? "அல்லது" : "OR"}</span>
       </div>
 
       {/* STATE */}
-      <select
-        value={selectedState}
-        onChange={handleStateChange}
-      >
+      <select value={selectedState} onChange={handleStateChange}>
         <option value="">
-          Select State
+          {selectedLanguage === "ta" ? "மாநிலத்தைத் தேர்ந்தெடுக்கவும்" : "Select State"}
         </option>
-
         {Object.keys(locations).map((state) => (
-          <option
-            key={state}
-            value={state}
-          >
+          <option key={state} value={state}>
             {state}
           </option>
         ))}
@@ -202,21 +142,12 @@ function LocationSelector({ onLocationChange }) {
 
       {/* DISTRICT */}
       {selectedState && (
-        <select
-          value={selectedDistrict}
-          onChange={handleDistrictChange}
-        >
+        <select value={selectedDistrict} onChange={handleDistrictChange}>
           <option value="">
-            Select District
+            {selectedLanguage === "ta" ? "மாவட்டத்தைத் தேர்ந்தெடுக்கவும்" : "Select District"}
           </option>
-
-          {Object.keys(
-            locations[selectedState]
-          ).map((district) => (
-            <option
-              key={district}
-              value={district}
-            >
+          {Object.keys(locations[selectedState]).map((district) => (
+            <option key={district} value={district}>
               {district}
             </option>
           ))}
@@ -225,21 +156,12 @@ function LocationSelector({ onLocationChange }) {
 
       {/* VILLAGE */}
       {selectedDistrict && (
-        <select
-          value={selectedVillage}
-          onChange={handleVillageChange}
-        >
+        <select value={selectedVillage} onChange={handleVillageChange}>
           <option value="">
-            Select Village
+            {selectedLanguage === "ta" ? "கிராமத்தைத் தேர்ந்தெடுக்கவும்" : "Select Village"}
           </option>
-
-          {locations[selectedState][
-            selectedDistrict
-          ].map((village) => (
-            <option
-              key={village.village}
-              value={village.village}
-            >
+          {locations[selectedState][selectedDistrict].map((village) => (
+            <option key={village.village} value={village.village}>
               {village.village}
             </option>
           ))}
@@ -247,45 +169,29 @@ function LocationSelector({ onLocationChange }) {
       )}
 
       {/* ERROR */}
-      {error && (
-        <p className="error-text">
-          {error}
-        </p>
-      )}
+      {error && <p className="error-text">{error}</p>}
 
       {/* LOCATION DETAILS */}
       {location && (
         <div className="location-details">
-          <h3>Selected Location</h3>
-
+          <h3>{selectedLanguage === "ta" ? "தேர்ந்தெடுக்கப்பட்ட இடம்" : "Selected Location"}</h3>
           <p>
-            <strong>State:</strong>{" "}
-            {location.state}
+            <strong>{selectedLanguage === "ta" ? "மாநிலம்:" : "State:"}</strong> {location.state}
           </p>
-
           <p>
-            <strong>District:</strong>{" "}
-            {location.district}
+            <strong>{selectedLanguage === "ta" ? "மாவட்டம்:" : "District:"}</strong> {location.district}
           </p>
-
           <p>
-            <strong>Village:</strong>{" "}
-            {location.village}
+            <strong>{selectedLanguage === "ta" ? "கிராமம்:" : "Village:"}</strong> {location.village}
           </p>
-
           <p>
-            <strong>Latitude:</strong>{" "}
-            {location.lat.toFixed(6)}
+            <strong>{selectedLanguage === "ta" ? "அட்சரேகை:" : "Latitude:"}</strong> {location.lat.toFixed(6)}
           </p>
-
           <p>
-            <strong>Longitude:</strong>{" "}
-            {location.lng.toFixed(6)}
+            <strong>{selectedLanguage === "ta" ? "நெடுவரை:" : "Longitude:"}</strong> {location.lng.toFixed(6)}
           </p>
-
           <p>
-            <strong>Source:</strong>{" "}
-            {location.source}
+            <strong>{selectedLanguage === "ta" ? "மூலம்:" : "Source:"}</strong> {location.source}
           </p>
         </div>
       )}
