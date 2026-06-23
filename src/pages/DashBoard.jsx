@@ -7,11 +7,14 @@ import IrrigationRecommendation from "../components/IrrigationRecommendation";
 import UploadCard from "../components/UploadCard";
 import DiagnosisCard from "../components/DiagnosisCard";
 import Sidebar from "../components/SideBar";
+import BottomNav from "../components/BottomNav";
 import { translations } from "../utils/translations";
 import { searchCropOrDisease } from "../services/searchService";
 import { predictDisease } from "../services/disease";
 import { getWeather } from "../services/weather";
 import "../styles/Dashboard.css";
+import Settings from "../components/Settings";
+import RecentHistory from "../components/RecentHistory";
 
 function Dashboard() {
   const [selectedLanguage, setSelectedLanguage] = useState("en");
@@ -29,7 +32,6 @@ function Dashboard() {
   const [activePage, setActivePage] = useState("home");
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
-  // 🔹 Fetch weather when location changes
   const handleLocationChange = async (selectedLocation) => {
     setLocation(selectedLocation);
     try {
@@ -45,7 +47,6 @@ function Dashboard() {
     }
   };
 
-  // 🔹 Search logic
   const handleSearch = async (searchText = query) => {
     if (!searchText?.trim()) return;
     try {
@@ -72,7 +73,6 @@ function Dashboard() {
     }
   };
 
-  // 🔹 Translate to Tamil
   const handleTranslateToTamil = async (text) => {
     if (!text) return;
     try {
@@ -91,7 +91,6 @@ function Dashboard() {
     }
   };
 
-  // 🔹 Image upload + disease detection
   const handleImageUpload = async (file) => {
     setUploadedImage(URL.createObjectURL(file));
     try {
@@ -112,69 +111,99 @@ function Dashboard() {
 
   return (
     <div className="dashboard">
-      {/* Sidebar */}
       <Sidebar
         open={sidebarOpen}
         setOpen={setSidebarOpen}
         selectedLanguage={selectedLanguage}
         setActivePage={setActivePage}
         setSelectedLanguage={setSelectedLanguage}
+        activePage={activePage}
       />
 
-      {/* Header */}
       <div className="topbar">
         <button className="menu-btn" onClick={() => setSidebarOpen(true)}>☰</button>
         <div className="logo">🌾 AgroAI</div>
       </div>
 
-      {/* Welcome Section */}
-      <div className="welcome-section">
-        <h2>{selectedLanguage === "ta" ? "வணக்கம்! 👋" : "Vanakkam! 👋"}</h2>
-        <p className="subtitle">
-          {selectedLanguage === "ta" ? "செயற்கை நுண்ணறிவு விவசாய உதவியாளர்" : "Smart Farming Assistant"}
-        </p>
-        <div className="location-weather">
-          <span>📍 {location?.district || "Select Location"}</span>
-          <span>☀️ {weather?.temperature || "Loading..."}</span>
-        </div>
-      </div>
+      {activePage === "home" && (
+        <>
+          <div className="welcome-section">
+            <h2>{selectedLanguage === "ta" ? "வணக்கம்! 👋" : "Vanakkam! 👋"}</h2>
+            <p className="subtitle">
+              {selectedLanguage === "ta" ? "செயற்கை நுண்ணறிவு விவசாய உதவியாளர்" : "Smart Farming Assistant"}
+            </p>
+            <div className="location-weather">
+              <span>📍 {location?.district || "Select Location"}</span>
+              <span>☀️ {weather?.temperature || "Loading..."}</span>
+            </div>
+          </div>
 
-      {/* Location Selector */}
-      <LocationSelector
-        onLocationChange={handleLocationChange}
-        selectedLanguage={selectedLanguage}
-      />
+          <div className="search-section">
+            <SearchBar
+              query={query}
+              setQuery={setQuery}
+              onSearch={handleSearch}
+              selectedLanguage={selectedLanguage}
+              isRecording={isRecording}
+              toggleRecording={() => setIsRecording(!isRecording)}
+            />
+          </div>
 
-      {/* Search Section */}
-      <div className="search-section">
-        <SearchBar
-          query={query}
-          setQuery={setQuery}
-          onSearch={handleSearch}
-          selectedLanguage={selectedLanguage}
-          isRecording={isRecording}
-          toggleRecording={() => setIsRecording(!isRecording)}
-        />
-      </div>
+          <LocationSelector
+            onLocationChange={handleLocationChange}
+            selectedLanguage={selectedLanguage}
+          />
 
-      {/* Feature Tabs */}
-      <div className="feature-tabs">
-        <button onClick={() => setActivePage("crop")}>🌱 {t.crop}</button>
-        <button onClick={() => setActivePage("fertilizer")}>🧪 {t.fertilizer}</button>
-        <button onClick={() => setActivePage("irrigation")}>💧 {t.irrigation}</button>
-        <button onClick={() => setActivePage("disease")}>🐛 {t.disease}</button>
-      </div>
-
-      {/* Pages */}
-      {activePage === "crop" && <CropRecommendation location={location} selectedLanguage={selectedLanguage} />}
-      {activePage === "fertilizer" && <FertilizerRecommendation weather={weather} selectedLanguage={selectedLanguage} />}
-      {activePage === "irrigation" && <IrrigationRecommendation location={location} weather={weather} selectedLanguage={selectedLanguage} />}
-      {activePage === "disease" && (
-        <div className="disease-section">
-          <UploadCard onImageUpload={handleImageUpload} uploadedImage={uploadedImage} selectedLanguage={selectedLanguage} />
-          <DiagnosisCard result={diagnosisResult} selectedLanguage={selectedLanguage} />
-        </div>
+          <div className="feature-tabs">
+            <button onClick={() => setActivePage("crop")}><span style={{ fontSize: "1.6rem" }}>🌱</span> {t.crop}</button>
+            <button onClick={() => setActivePage("fertilizer")}><span style={{ fontSize: "1.6rem" }}>🧪</span> {t.fertilizer}</button>
+            <button onClick={() => setActivePage("irrigation")}><span style={{ fontSize: "1.6rem" }}>💧</span> {t.irrigation}</button>
+            <button onClick={() => setActivePage("disease")}><span style={{ fontSize: "1.6rem" }}>🐛 </span>{t.disease}</button>
+          </div>
+        </>
+        
       )}
+<RecentHistory selectedLanguage={selectedLanguage} />
+      {activePage === "crop" && (
+        <CropRecommendation
+          location={location}
+          selectedLanguage={selectedLanguage}
+          onBack={() => setActivePage("home")}
+        />
+      )}
+      {activePage === "fertilizer" && (
+        <FertilizerRecommendation
+          weather={weather}
+          selectedLanguage={selectedLanguage}
+          onBack={() => setActivePage("home")}
+        />
+      )}
+      {activePage === "irrigation" && (
+        <IrrigationRecommendation
+          location={location}
+          weather={weather}
+          selectedLanguage={selectedLanguage}
+          onBack={() => setActivePage("home")}
+        />
+      )}
+      {activePage === "disease" && (
+  <div className="disease-section">
+    <div className="page-header">
+      <button className="back-btn" onClick={() => setActivePage("home")}>←</button>
+      <h2>🐛 {selectedLanguage === "ta" ? "நோய் கண்டறிதல்" : "Disease Detection"}</h2>
+    </div>
+    <UploadCard onImageUpload={handleImageUpload} uploadedImage={uploadedImage} selectedLanguage={selectedLanguage} />
+    <DiagnosisCard result={diagnosisResult} selectedLanguage={selectedLanguage} />
+  </div>
+)}
+      {activePage === "settings" && (
+  <Settings
+    selectedLanguage={selectedLanguage}
+    setSelectedLanguage={setSelectedLanguage}
+    onBack={() => setActivePage("home")}
+  />
+)}
+      <BottomNav activePage={activePage} setActivePage={setActivePage} selectedLanguage={selectedLanguage} />
     </div>
   );
 }

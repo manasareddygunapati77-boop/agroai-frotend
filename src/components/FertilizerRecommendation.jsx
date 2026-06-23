@@ -3,7 +3,7 @@ import { getFertilizerRecommendation } from "../services/fertilizerRecommendatio
 import { translations } from "../utils/translations"; // import dictionary
 import "../styles/FertilizerRecommendation.css";
 
-function FertilizerRecommendation({ weather, selectedLanguage = "en" }) {
+function FertilizerRecommendation({ weather, selectedLanguage = "en", onBack }) {
   const [inputs, setInputs] = useState({
     crop_type: "",
     soil_type: "Loamy",
@@ -54,7 +54,11 @@ function FertilizerRecommendation({ weather, selectedLanguage = "en" }) {
 
   return (
     <div className="fertilizer-card">
-      <h2>🧪 {t.fertilizer}</h2>
+      {/* Back header */}
+      <div className="page-header">
+        <button className="back-btn" onClick={onBack}>←</button>
+        <h2>🧪 {t.fertilizer}</h2>
+      </div>
 
       {/* Crop Type Dropdown */}
       <label>{selectedLanguage === "ta" ? "பயிர் வகை:" : "Crop Type:"}</label>
@@ -69,7 +73,6 @@ function FertilizerRecommendation({ weather, selectedLanguage = "en" }) {
           "Maize",
           "Sugarcane",
           "Cotton",
-          "Tobacco",
           "Paddy",
           "Barley",
           "Wheat",
@@ -77,6 +80,7 @@ function FertilizerRecommendation({ weather, selectedLanguage = "en" }) {
           "Oil seeds",
           "Pulses",
           "Ground Nuts",
+          "Tobacco",
         ].map((crop) => (
           <option key={crop} value={crop}>
             {crop}
@@ -98,34 +102,32 @@ function FertilizerRecommendation({ weather, selectedLanguage = "en" }) {
       </select>
 
       {/* Nutrient Inputs */}
-  {/* Nutrient Inputs */}
-<div className="fertilizer-inputs">
-  <input
-    type="number"
-    placeholder={selectedLanguage === "ta" ? "நைட்ரஜன் (N)" : "Nitrogen (N)"}
-    value={inputs.nitrogen}
-    onChange={(e) => handleChange("nitrogen", e.target.value)}
-  />
-  <input
-    type="number"
-    placeholder={selectedLanguage === "ta" ? "பாஸ்பரஸ் (P)" : "Phosphorus (P)"}
-    value={inputs.phosphorus}
-    onChange={(e) => handleChange("phosphorus", e.target.value)}
-  />
-  <input
-    type="number"
-    placeholder={selectedLanguage === "ta" ? "பொட்டாசியம் (K)" : "Potassium (K)"}
-    value={inputs.potassium}
-    onChange={(e) => handleChange("potassium", e.target.value)}
-  />
-  <input
-    type="number"
-    placeholder={selectedLanguage === "ta" ? "ஈரப்பதம் (%)" : "Moisture (%)"}
-    value={inputs.moisture}
-    onChange={(e) => handleChange("moisture", e.target.value)}
-  />
-</div>
-
+      <div className="fertilizer-inputs">
+        <input
+          type="number"
+          placeholder={selectedLanguage === "ta" ? "நைட்ரஜன் (N)" : "Nitrogen (N)"}
+          value={inputs.nitrogen}
+          onChange={(e) => handleChange("nitrogen", e.target.value)}
+        />
+        <input
+          type="number"
+          placeholder={selectedLanguage === "ta" ? "பாஸ்பரஸ் (P)" : "Phosphorus (P)"}
+          value={inputs.phosphorus}
+          onChange={(e) => handleChange("phosphorus", e.target.value)}
+        />
+        <input
+          type="number"
+          placeholder={selectedLanguage === "ta" ? "பொட்டாசியம் (K)" : "Potassium (K)"}
+          value={inputs.potassium}
+          onChange={(e) => handleChange("potassium", e.target.value)}
+        />
+        <input
+          type="number"
+          placeholder={selectedLanguage === "ta" ? "ஈரப்பதம் (%)" : "Moisture (%)"}
+          value={inputs.moisture}
+          onChange={(e) => handleChange("moisture", e.target.value)}
+        />
+      </div>
 
       <button onClick={handleFertilizerRecommendation}>
         {selectedLanguage === "ta" ? "பரிந்துரையை பெறவும்" : "Get Recommendation"}

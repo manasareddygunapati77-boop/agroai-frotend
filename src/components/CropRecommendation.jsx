@@ -3,7 +3,7 @@ import { predictCrop } from "../services/cropService";
 import { translations } from "../utils/translations";
 import "../styles/CropRecommendation.css";
 
-function CropRecommendation({ location, selectedLanguage = "en" }) {
+function CropRecommendation({ location, selectedLanguage = "en", onBack }) {
   const [soilInputs, setSoilInputs] = useState({
     nitrogen: "",
     phosphorus: "",
@@ -35,7 +35,12 @@ function CropRecommendation({ location, selectedLanguage = "en" }) {
 
   return (
     <div className="crop-card">
-      <h2>{t.cropRecommendation}</h2>
+      {/* Back header */}
+      <div className="page-header">
+        <button className="back-btn" onClick={onBack}>←</button>
+        <h2>{t.cropRecommendation}</h2>
+      </div>
+
       <div className="inputs-grid">
         <input type="number" placeholder="Nitrogen" value={soilInputs.nitrogen} onChange={(e)=>setSoilInputs({...soilInputs,nitrogen:e.target.value})}/>
         <input type="number" placeholder="Phosphorus" value={soilInputs.phosphorus} onChange={(e)=>setSoilInputs({...soilInputs,phosphorus:e.target.value})}/>

@@ -3,7 +3,7 @@ import { getIrrigationRecommendation } from "../services/irrigationRecommendatio
 import { translations } from "../utils/translations";
 import "../styles/IrrigationRecommendation.css";
 
-function IrrigationRecommendation({ location, weather, selectedLanguage = "en" }) {
+function IrrigationRecommendation({ location, weather, selectedLanguage = "en", onBack }) {
   const [inputs, setInputs] = useState({
     crop_type: "",
     soil_type: "Loam",
@@ -33,8 +33,8 @@ function IrrigationRecommendation({ location, weather, selectedLanguage = "en" }
         soil_moisture_percent: Number(inputs.soil_moisture_percent || 0),
         groundwater_availability: inputs.groundwater_availability,
         rainfall_mm: Number(inputs.rainfall_mm || weather?.rainfall || 0),
-        temperature_c: weather?.temperature || 0,   // ✅ auto from weather
-        humidity_percent: weather?.humidity || 0,  // ✅ auto from weather
+        temperature_c: weather?.temperature || 0,
+        humidity_percent: weather?.humidity || 0,
         location: location?.village || "Unknown",
       };
 
@@ -52,7 +52,11 @@ function IrrigationRecommendation({ location, weather, selectedLanguage = "en" }
 
   return (
     <div className="irrigation-card">
-      <h2>💧 {t.irrigation}</h2>
+      {/* Back header */}
+      <div className="page-header">
+        <button className="back-btn" onClick={onBack}>←</button>
+        <h2>💧 {t.irrigation}</h2>
+      </div>
 
       {/* Crop Type */}
       <label>{selectedLanguage === "ta" ? "பயிர் வகை:" : "Crop Type:"}</label>

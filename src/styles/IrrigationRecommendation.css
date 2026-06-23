@@ -63,4 +63,50 @@
 }
 
 .irrigation-result {
-  margin-top: 
+  margin-top: 1.2rem;
+  background-color: #ffffff;
+  border-radius: 10px;
+  padding: 1rem;
+  border: 1px solid #a5d6a7;
+}
+
+.irrigation-result h3 {
+  color: #2e7d32;
+  margin-bottom: 0.5rem;
+}
+
+/* Back header */
+.page-header {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  margin-bottom: 1rem;
+}
+
+.page-header h2 {
+  margin: 0;
+  color: #2e7d32;
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+.irrigation-card button.back-btn {
+  background-color: #2e7d32;
+  color: #ffffff;
+  width: 36px;
+  height: 36px;
+  min-width: 36px;
+  border-radius: 8px;
+  margin-top: 0;
+  padding: 0;
+  font-size: 1.2rem;
+  font-weight: normal;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+}
+
+.irrigation-card button.back-btn:hover {
+  background-color: #1b5e20;
+}
