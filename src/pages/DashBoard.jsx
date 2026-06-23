@@ -6,7 +6,7 @@ import FertilizerRecommendation from "../components/FertilizerRecommendation";
 import IrrigationRecommendation from "../components/IrrigationRecommendation";
 import UploadCard from "../components/UploadCard";
 import DiagnosisCard from "../components/DiagnosisCard";
-import Sidebar from "../components/Sidebar";
+import Sidebar from "../components/SideBar";
 import { translations } from "../utils/translations";
 import { searchCropOrDisease } from "../services/searchService";
 import { predictDisease } from "../services/disease";
