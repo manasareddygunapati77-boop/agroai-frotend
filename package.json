@@ -12,6 +12,8 @@
     "start": "node server.js"
   },
   "dependencies": {
+    "@fortawesome/free-solid-svg-icons": "^7.2.0",
+    "@fortawesome/react-fontawesome": "^3.3.1",
     "axios": "^1.18.0",
     "cors": "^2.8.6",
     "csv-parser": "^3.2.1",
