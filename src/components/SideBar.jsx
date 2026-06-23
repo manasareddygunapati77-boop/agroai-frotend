@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import "../styles/Sidebar.css";
+import "../styles/SideBar.css";
 
 function Sidebar({ open, setOpen, selectedLanguage = "en", setActivePage, setSelectedLanguage }) {
   return (
