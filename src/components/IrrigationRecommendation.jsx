@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { getIrrigationRecommendation } from "../services/irrigationRecommendation";
-import { translations } from "../utils/translations"; // import dictionary
+import { translations } from "../utils/translations";
 import "../styles/IrrigationRecommendation.css";
 
 function IrrigationRecommendation({ location, weather, selectedLanguage = "en" }) {
@@ -12,6 +12,7 @@ function IrrigationRecommendation({ location, weather, selectedLanguage = "en" }
     farm_size_acres: "",
     soil_moisture_percent: "",
     groundwater_availability: "",
+    rainfall_mm: "", // optional manual override
   });
 
   const [result, setResult] = useState(null);
@@ -31,9 +32,9 @@ function IrrigationRecommendation({ location, weather, selectedLanguage = "en" }
         farm_size_acres: Number(inputs.farm_size_acres || 0),
         soil_moisture_percent: Number(inputs.soil_moisture_percent || 0),
         groundwater_availability: inputs.groundwater_availability,
-        temperature_c: weather?.temperature || 0,
-        rainfall_mm: weather?.rainfall || 0,
-        humidity_percent: weather?.humidity || 0,
+        rainfall_mm: Number(inputs.rainfall_mm || weather?.rainfall || 0),
+        temperature_c: weather?.temperature || 0,   // ✅ auto from weather
+        humidity_percent: weather?.humidity || 0,  // ✅ auto from weather
         location: location?.village || "Unknown",
       };
 
@@ -56,54 +57,77 @@ function IrrigationRecommendation({ location, weather, selectedLanguage = "en" }
       {/* Crop Type */}
       <label>{selectedLanguage === "ta" ? "பயிர் வகை:" : "Crop Type:"}</label>
       <select value={inputs.crop_type} onChange={(e) => handleChange("crop_type", e.target.value)}>
-        <option value="">
-          {selectedLanguage === "ta" ? "பயிரைத் தேர்ந்தெடுக்கவும்" : "Select Crop"}
-        </option>
-        {["Maize","Grapes","Sugarcane","Cotton","Rice","Barley","Vegetable","Wheat"].map(crop => (
-          <option key={crop} value={crop}>{crop}</option>
-        ))}
+        <option value="">{selectedLanguage === "ta" ? "பயிரைத் தேர்ந்தெடுக்கவும்" : "Select Crop"}</option>
+        <option value="Rice">Rice → water-heavy paddy</option>
+        <option value="Wheat">Wheat → winter grain</option>
+        <option value="Cotton">Cotton → dry climate crop</option>
+        <option value="Maize">Maize → food & fodder</option>
+        <option value="Sugarcane">Sugarcane → high water need</option>
+        <option value="Barley">Barley → drought tolerant</option>
+        <option value="Grapes">Grapes → drip suited fruit</option>
+        <option value="Vegetable">Vegetable → tomato, onion etc</option>
       </select>
 
       {/* Soil Type */}
       <label>{selectedLanguage === "ta" ? "மண் வகை:" : "Soil Type:"}</label>
       <select value={inputs.soil_type} onChange={(e) => handleChange("soil_type", e.target.value)}>
-        {["Sandy","Clay","Silty","Clayey Loam","Loam"].map(soil => (
-          <option key={soil} value={soil}>{soil}</option>
-        ))}
+        <option value="Sandy">Sandy → drains fast</option>
+        <option value="Clay">Clay → holds water</option>
+        <option value="Loam">Loam → best for crops</option>
+        <option value="Silty">Silty → fine, near rivers</option>
+        <option value="Clayey Loam">Clayey Loam → clay-loam mix</option>
       </select>
 
       {/* Region */}
       <label>{selectedLanguage === "ta" ? "பகுதி:" : "Region:"}</label>
       <select value={inputs.region} onChange={(e) => handleChange("region", e.target.value)}>
-        {["Humid","Arid","Semi-Arid","Sub-Humid"].map(region => (
-          <option key={region} value={region}>{region}</option>
-        ))}
+        <option value="Humid">Humid → high rainfall</option>
+        <option value="Arid">Arid → very dry</option>
+        <option value="Semi-Arid">Semi-Arid → moderately dry</option>
+        <option value="Sub-Humid">Sub-Humid → mild rainfall</option>
       </select>
 
       {/* Season */}
       <label>{selectedLanguage === "ta" ? "பருவம்:" : "Season:"}</label>
       <select value={inputs.season} onChange={(e) => handleChange("season", e.target.value)}>
-        {["Rabi","Zaid","Kharif"].map(season => (
-          <option key={season} value={season}>{season}</option>
-        ))}
+        <option value="Kharif">Kharif → Jun – Oct</option>
+        <option value="Rabi">Rabi → Nov – Mar</option>
+        <option value="Zaid">Zaid → Apr – Jun</option>
       </select>
 
       {/* Farm Size */}
-      <div className="irrigation-inputs">
+      <label>{selectedLanguage === "ta" ? "பண்ணை அளவு (ஏக்கர்)" : "Farm Size (acres)"}</label>
       <input
         type="number"
-        placeholder={selectedLanguage === "ta" ? "பண்ணை அளவு (ஏக்கர்)" : "Farm Size (acres)"}
+        min="0.5"
+        max="50"
+        step="0.1"
+        placeholder="0.5 – 50 acres"
         value={inputs.farm_size_acres}
         onChange={(e) => handleChange("farm_size_acres", e.target.value)}
       />
 
       {/* Soil Moisture */}
+      <label>{selectedLanguage === "ta" ? "மண் ஈரப்பதம் (%)" : "Soil Moisture (%)"}</label>
       <input
         type="number"
-        placeholder={selectedLanguage === "ta" ? "மண் ஈரப்பதம் (%)" : "Soil Moisture (%)"}
+        min="10"
+        max="80"
+        placeholder="10 – 80 %"
         value={inputs.soil_moisture_percent}
         onChange={(e) => handleChange("soil_moisture_percent", e.target.value)}
-      /></div>
+      />
+
+      {/* Rainfall (optional override) */}
+      <label>{selectedLanguage === "ta" ? "மழை (மிமீ)" : "Rainfall (mm)"}</label>
+      <input
+        type="number"
+        min="0"
+        max="1120"
+        placeholder={`Auto: ${weather?.rainfall || 0} mm`}
+        value={inputs.rainfall_mm}
+        onChange={(e) => handleChange("rainfall_mm", e.target.value)}
+      />
 
       {/* Groundwater Availability */}
       <label>{selectedLanguage === "ta" ? "நிலத்தடி நீர் கிடைக்கும் நிலை:" : "Groundwater Availability:"}</label>
@@ -111,9 +135,9 @@ function IrrigationRecommendation({ location, weather, selectedLanguage = "en" }
         value={inputs.groundwater_availability}
         onChange={(e) => handleChange("groundwater_availability", e.target.value)}
       >
-        {["High","Medium","Low"].map(level => (
-          <option key={level} value={level}>{level}</option>
-        ))}
+        <option value="Low">Low → scarce</option>
+        <option value="Medium">Medium → moderate</option>
+        <option value="High">High → plenty</option>
       </select>
 
       <button onClick={handleIrrigationRecommendation}>

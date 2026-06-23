@@ -1,0 +1,170 @@
+/* Sidebar container */
+/* Sidebar container */
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 320px !important;   /* force wider sidebar */
+  max-width: 80%;            /* responsive on small screens */
+  height: 100%;
+  background-color: #2e7d32; /* AgroAI green */
+  color: #ffffff;
+  transform: translateX(-100%);
+  transition: transform 0.3s ease;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.sidebar.active {
+  transform: translateX(0);
+}
+
+/* Menu items */
+.sidebar-menu a,
+.sidebar-menu button {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;                /* more space between icon and text */
+  width: 100%;
+  background: none;
+  border: none;
+  color: #ffffff;
+  font-size: 1rem;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+  padding: 0.8rem 1rem;       /* more padding for readability */
+  line-height: 1.5;           /* consistent vertical spacing */
+  white-space: normal;        /* allow wrapping */
+  word-break: break-word;     /* wrap long words */
+  transition: background 0.3s ease, color 0.3s ease;
+}
+
+.sidebar-menu a:hover,
+.sidebar-menu button:hover {
+  background-color: #1b5e20;
+  color: #ffffff;
+}
+
+
+.sidebar.active {
+  transform: translateX(0);
+}
+
+/* Overlay */
+.sidebar-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.4);
+  z-index: 999;
+}
+
+/* Header */
+.sidebar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.close-btn {
+  background: none;
+  border: none;
+  color: #ffffff;
+  font-size: 1.5rem;
+  cursor: pointer;
+}
+
+/* Menu */
+.sidebar-menu {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.sidebar-menu li {
+  margin: 0.4rem 0;
+}
+
+/* Unified alignment for all menu items */
+.sidebar-menu a,
+.sidebar-menu button {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  width: 100%;
+  background: none;
+  border: none;
+  color: #ffffff;
+  font-size: 1rem;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+  padding: 0.6rem 1rem;
+  line-height: 1.4; /* keeps multi-line text evenly spaced */
+  white-space: normal;
+  word-break: break-word;
+  transition: background 0.3s ease, color 0.3s ease;
+}
+
+.sidebar-menu a:hover,
+.sidebar-menu button:hover {
+  background-color: #1b5e20; /* darker green on hover */
+  color: #ffffff;
+}
+
+/* Icon alignment fix */
+.sidebar-menu a span,
+.sidebar-menu button span {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.4rem;
+}
+
+/* Language selector */
+.settings-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 0.6rem 1rem;
+}
+
+.language-selector {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.language-selector button {
+  background-color: #ffffff;
+  color: #2e7d32;
+  border: none;
+  border-radius: 6px;
+  padding: 0.3rem 0.6rem;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.language-selector button:hover {
+  background-color: #1b5e20;
+  color: #ffffff;
+}
+
+/* Footer */
+.sidebar-footer {
+  text-align: center;
+  padding: 1rem;
+  font-size: 0.9rem;
+  color: #ffffff;
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+}

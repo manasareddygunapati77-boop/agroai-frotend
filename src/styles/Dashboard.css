@@ -1,103 +1,251 @@
-/* Overall dashboard layout */
+/* General Dashboard Layout */
 .dashboard {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 20px;
-  font-family: "Segoe UI", sans-serif;
-  background: #f9fff9;
-}
-
-/* Settings button */
-.settings-btn {
-  display: block;
-  margin: 20px auto;              /* centers horizontally */
-  background: #2e7d32;
-  color: white;
-  border: none;
-  padding: 10px 16px;
-  border-radius: 6px;
-  cursor: pointer;
-  font-weight: 600;
-  font-size: 14px;
-  transition: background-color 0.2s ease-in-out, transform 0.1s ease-in-out;
-  box-shadow: 0 3px 6px rgba(0,0,0,0.1);
-}
-
-.settings-btn:hover {
-  background: #1b5e20;
-  transform: scale(1.05);
-}
-
-/* Settings panel */
-.settings-panel {
-  background: #f1f8e9;
-  border: 1px solid #c8e6c9;
-  border-radius: 12px;
-  padding: 16px;
-  margin-bottom: 20px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-}
-
-.settings-panel h3 {
-  color: #2e7d32;
-  margin-bottom: 12px;
-}
-
-/* Advisory result card */
-.search-result-card {
-  background: #f1f8e9;
-  border: 1px solid #c8e6c9;
-  border-radius: 12px;
-  padding: 20px;
-  margin: 20px 0;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-}
-
-.search-result-card h2 {
-  color: #2e7d32;
-  margin-bottom: 12px;
-  font-weight: 700;
-}
-
-/* History button */
-.history-card button {
-  display: block;
-  margin: 30px auto 120px auto;   /* centers + leaves space for mic */
-  background: #2e7d32;
-  color: white;
-  border: none;
-  padding: 10px 18px;
-  border-radius: 6px;
-  cursor: pointer;
-  font-weight: 600;
-  font-size: 14px;
-  transition: background-color 0.2s ease-in-out, transform 0.1s ease-in-out;
-  box-shadow: 0 3px 6px rgba(0,0,0,0.1);
-}
-
-.history-card button:hover {
-  background: #1b5e20;
-  transform: scale(1.05);
-}
-
-/* Floating mic */
-.floating-mic {
-  position: fixed;
-  bottom: 100px;   /* lifted to avoid overlap */
-  right: 30px;
-  background: #2e7d32;
-  color: white;
-  border-radius: 50%;
-  width: 55px;
-  height: 55px;
   display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: center;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-  cursor: pointer;
-  transition: transform 0.2s ease-in-out;
+  background-color: #f8fff8;
+  min-height: 100vh;
+  font-family: "Segoe UI", sans-serif;
+  padding-bottom: 2rem;
 }
 
-.floating-mic:hover {
-  transform: translateY(-5px);
+/* Header */
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 95%;
+  background-color: #ffffff;
+  border-radius: 12px;
+  padding: 0.8rem 1rem;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  margin-top: 0.8rem;
+}
+
+.menu-btn {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  color: #2e7d32;
+  cursor: pointer;
+}
+
+.logo {
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: #2e7d32;
+}
+
+/* Welcome Section */
+.welcome-section {
+  text-align: center;
+  margin: 1rem auto;
+  background-color: #ffffff;
+  border-radius: 12px;
+  padding: 1rem;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  width: 90%;
+}
+
+.welcome-section h2 {
+  color: #2e7d32;
+  font-weight: 600;
+}
+
+.subtitle {
+  color: #555;
+  margin-bottom: 0.5rem;
+}
+
+.location-weather {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  font-weight: 500;
+  color: #333;
+}
+
+/* Search Section */
+.search-section {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 1rem auto;
+  width: 90%;
+  max-width: 500px;
+}
+
+.search-input-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.search-input-wrapper input {
+  width: 100%;
+  padding: 0.6rem 2.5rem 0.6rem 0.8rem; /* space for mic */
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 1rem;
+  outline: none;
+  background-color: #ffffff;
+  box-sizing: border-box;
+}
+
+.search-input-wrapper input:focus {
+  border-color: #2e7d32;
+  box-shadow: 0 0 5px rgba(46, 125, 50, 0.3);
+}
+
+/* Mic icon inside input */
+.mic-icon {
+  position: absolute;
+  right: 0.8rem;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 1.2rem;
+  color: #2e7d32;
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.mic-icon:hover {
+  color: #4caf50;
+}
+
+.mic-icon.recording {
+  color: #d32f2f;
+  animation: blink 1s infinite;
+}
+
+@keyframes blink {
+  0% { opacity: 1; }
+  50% { opacity: 0.3; }
+  100% { opacity: 1; }
+}
+
+/* Search button */
+.search-section button {
+  background-color: #2e7d32;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 0.6rem 1.2rem;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background 0.3s ease;
+}
+
+.search-section button:hover {
+  background-color: #4caf50;
+}
+
+/* Feature Tabs */
+.feature-tabs {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.8rem;
+  width: 90%;
+  margin: 1rem auto;
+}
+
+/* Match search bar color (#2e7d32) */
+.feature-tabs button {
+  background-color: #2e7d32;     /* AgroAI green */
+  color: #ffffff;                /* white text */
+  border: none;
+  border-radius: 12px;           /* rounded corners */
+  padding: 0.9rem 1rem;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  width: 100%;
+  text-align: center;
+  white-space: normal;
+  word-break: break-word;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1); /* same shadow as search bar */
+}
+.feature-tabs button:hover {
+  background-color: #1b5e20;     /* darker green on hover */
+  color: #ffffff;
+}
+
+/* Active tab highlight */
+.feature-tabs button.active {
+  background-color: #388e3c;     /* slightly lighter green */
+  color: #ffffff;
+}
+/* Crop/Fertilizer/Irrigation/Disease Sections */
+.crop-section,
+.disease-section {
+  width: 90%;
+  margin: 1rem auto;
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  padding: 1rem;
+}
+
+.crop-section h3,
+.disease-section h3 {
+  color: #2e7d32;
+  font-weight: 700;
+  margin-bottom: 1rem;
+}
+
+.crop-section input {
+  width: 100%;
+  margin: 0.5rem 0;
+  padding: 0.6rem;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 1rem;
+}
+
+.crop-section button {
+  background-color: #2e7d32;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 0.6rem 1.2rem;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background 0.3s ease;
+}
+
+.crop-section button:hover {
+  background-color: #4caf50;
+}
+
+/* Remove history button */
+.view-history-btn {
+  display: none !important;
+}
+
+/* Mobile responsiveness */
+@media screen and (max-width: 768px) {
+  .topbar {
+    font-size: 0.9rem;
+  }
+
+  .feature-tabs button {
+    font-size: 0.95rem;
+    padding: 0.8rem;
+  }
+
+  .crop-section,
+  .disease-section {
+    padding: 0.8rem;
+  }
+
+  .search-section {
+    flex-direction: column;
+    gap: 0.6rem;
+  }
+
+  .search-section button {
+    width: 100%;
+  }
 }

@@ -1,45 +1,58 @@
-/* 🔍 Search Bar Styling */
-.search-bar {
+.search-input-wrapper {
+  position: relative;
+  width: 100%;
   display: flex;
-  justify-content: center;
   align-items: center;
-  gap: 10px;
-  margin: 20px auto;
 }
 
-.search-bar input {
-  width: 320px;
-  padding: 10px 12px;
-  border: 1.5px solid #4b6043;
-  border-radius: 6px;
-  background-color: #e9f3e4;
-  color: #2f3e2f;
-  font-size: 14px;
-  font-family: "Segoe UI", sans-serif;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-  transition: all 0.2s ease-in-out;
-}
-
-.search-bar input:focus {
+.search-input-wrapper input {
+  flex: 1;
+  padding: 0.6rem 2.5rem 0.6rem 0.8rem; /* space for mic */
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 1rem;
   outline: none;
-  border-color: #3b7a57;
-  background-color: #f5fff2;
+  background-color: #f8fff8;
+  box-sizing: border-box; /* ensures padding doesn't overflow */
+  overflow: hidden;
+  text-overflow: ellipsis; /* prevents text from pushing mic */
 }
 
-/* 🌱 Search Button */
-.search-bar button {
-  background-color: #3b7a57;
-  color: white;
-  border: none;
-  padding: 10px 16px;
-  border-radius: 6px;
+.mic-icon {
+  position: absolute;
+  right: 0.8rem;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 1.2rem;
+  color: #2e7d32;
   cursor: pointer;
+  flex-shrink: 0; /* prevents mic from shrinking */
+}
+/* Search Button Styling */
+.search-section button {
+  background-color: #2e7d32;        /* AgroAI green */
+  color: #ffffff;                   /* white text */
+  border: none;
+  border-radius: 8px;               /* rounded corners */
+  padding: 0.6rem 1.4rem;
+  font-size: 1rem;
   font-weight: 600;
-  font-family: "Segoe UI", sans-serif;
-  transition: background-color 0.2s ease-in-out, transform 0.1s ease-in-out;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
 }
 
-.search-bar button:hover {
-  background-color: #2f5c43;
-  transform: scale(1.05);
+.search-section button:hover {
+  background-color: #1b5e20;        /* darker green on hover */
+  transform: scale(1.05);           /* subtle zoom */
+}
+
+.search-section button:active {
+  background-color: #388e3c;        /* slightly lighter when clicked */
+  transform: scale(0.98);
+}
+
+.search-section button:disabled {
+  background-color: #a5d6a7;        /* muted green when disabled */
+  cursor: not-allowed;
 }

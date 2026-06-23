@@ -16,7 +16,10 @@ export const translations = {
 
     // CropRecommendation
     cropRecommendation: "🌱 Crop Recommendation",
-
+    crop: "Crop Recommendation",
+    fertilizer: "Fertilizer Recommendation",
+    irrigation: "Irrigation Recommendation",
+    disease: "Disease Detection",
     // FertilizerRecommendation
     fertilizer: "💧 Fertilizer Recommendation",
 
@@ -41,6 +44,13 @@ export const translations = {
     settings: "Settings",
     selectLanguage: "Select Language:",
     translate: "Translate to Tamil",
+     viewHistory: "View History",
+    hideHistory: "Hide History",
+    noHistory: "No saved searches yet.",
+    searchHistory: "📜 Search History",
+    query: "❓ Question",
+    answer: "💡 Answer",
+    date: "🕒 Date",
   },
 
   ta: {
@@ -60,7 +70,10 @@ export const translations = {
 
     // CropRecommendation
     cropRecommendation: "🌱 பயிர் பரிந்துரை",
-
+crop: "பயிர் பரிந்துரை",
+    fertilizer: "உர பரிந்துரை",
+    irrigation: "நீர்ப்பாசன பரிந்துரை",
+    disease: "நோய் கண்டறிதல்",
     // FertilizerRecommendation
     fertilizer: "💧 உர பரிந்துரை",
 
@@ -85,5 +98,12 @@ export const translations = {
     settings: "அமைப்புகள்",
     selectLanguage: "மொழியைத் தேர்ந்தெடுக்கவும்:",
     translate: "தமிழில் மொழிபெயர்க்க",
+    viewHistory: "வரலாற்றைப் பார்க்கவும்",
+    hideHistory: "வரலாற்றை மறைக்கவும்",
+    noHistory: "சேமிக்கப்பட்ட தேடல்கள் இல்லை.",
+    searchHistory: "📜 தேடல் வரலாறு",
+    query: "❓ கேள்வி",
+    answer: "💡 பதில்",
+    date: "🕒 தேதி",
   },
 };
