@@ -22,34 +22,49 @@ function IrrigationRecommendation({ location, weather, selectedLanguage = "en", 
     setInputs({ ...inputs, [field]: value });
   };
 
-  const handleIrrigationRecommendation = async () => {
-    try {
-      const payload = {
-        crop_type: inputs.crop_type,
-        soil_type: inputs.soil_type,
-        region: inputs.region,
-        season: inputs.season,
-        farm_size_acres: Number(inputs.farm_size_acres || 0),
-        soil_moisture_percent: Number(inputs.soil_moisture_percent || 0),
-        groundwater_availability: inputs.groundwater_availability,
-        rainfall_mm: Number(inputs.rainfall_mm || weather?.rainfall || 0),
-        temperature_c: weather?.temperature || 0,
-        humidity_percent: weather?.humidity || 0,
-        location: location?.village || "Unknown",
-      };
+const handleIrrigationRecommendation = async () => {
+  try {
+    console.log("Current Inputs:", inputs);
 
-      const res = await getIrrigationRecommendation(payload);
-      setResult(res);
-    } catch (err) {
-      console.error("Irrigation API error:", err);
-      alert(
-        selectedLanguage === "ta"
-          ? "நீர்ப்பாசன பரிந்துரை தோல்வியடைந்தது"
-          : "Irrigation recommendation failed"
-      );
+    const payload = {
+      crop_type: inputs.crop_type,
+      soil_type: inputs.soil_type,
+      region: inputs.region,
+      season: inputs.season,
+      farm_size_acres: Number(inputs.farm_size_acres || 0),
+      soil_moisture_percent: Number(inputs.soil_moisture_percent || 0),
+      groundwater_availability: inputs.groundwater_availability,
+      rainfall_mm: Number(inputs.rainfall_mm || weather?.rainfall || 0),
+
+      // IMPORTANT: use temperature_C not temperature_c
+      temperature_C: weather?.temperature || 0,
+
+      humidity_percent: weather?.humidity || 0,
+      location: location?.village || "Unknown",
+    };
+
+    console.log("Payload being sent:", payload);
+
+    const res = await getIrrigationRecommendation(payload);
+
+    console.log("API Response:", res);
+
+    setResult(res);
+
+  } catch (err) {
+    console.error("Irrigation API error:", err);
+
+    if (err.response) {
+      console.error("Backend Response:", err.response.data);
     }
-  };
 
+    alert(
+      selectedLanguage === "ta"
+        ? "நீர்ப்பாசன பரிந்துரை தோல்வியடைந்தது"
+        : "Irrigation recommendation failed"
+    );
+  }
+};
   return (
     <div className="irrigation-card">
       {/* Back header */}
@@ -156,6 +171,10 @@ function IrrigationRecommendation({ location, weather, selectedLanguage = "en", 
               (selectedLanguage === "ta"
                 ? "பரிந்துரை கிடைக்கவில்லை"
                 : "No recommendation available")}
+                <div style={{ marginTop: "10px", color: "red" }}>
+  <p>Region State: {inputs.region}</p>
+  <p>Season State: {inputs.season}</p>
+</div>
           </p>
         </div>
       )}
