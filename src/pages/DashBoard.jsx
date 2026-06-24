@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import LocationSelector from "../components/LocationSelector";
 import SearchBar from "../components/SearchBar";
 import CropRecommendation from "../components/CropRecommendation";
@@ -8,13 +8,13 @@ import UploadCard from "../components/UploadCard";
 import DiagnosisCard from "../components/DiagnosisCard";
 import Sidebar from "../components/SideBar";
 import BottomNav from "../components/BottomNav";
+import Settings from "../components/Settings";
+import RecentHistory from "../components/RecentHistory";
 import { translations } from "../utils/translations";
 import { searchCropOrDisease } from "../services/searchService";
 import { predictDisease } from "../services/disease";
 import { getWeather } from "../services/weather";
 import "../styles/Dashboard.css";
-import Settings from "../components/Settings";
-import RecentHistory from "../components/RecentHistory";
 
 function Dashboard() {
   const [selectedLanguage, setSelectedLanguage] = useState("en");
@@ -32,6 +32,7 @@ function Dashboard() {
   const [activePage, setActivePage] = useState("home");
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
+  // 🔹 Weather fetch
   const handleLocationChange = async (selectedLocation) => {
     setLocation(selectedLocation);
     try {
@@ -47,6 +48,7 @@ function Dashboard() {
     }
   };
 
+  // 🔹 Search logic
   const handleSearch = async (searchText = query) => {
     if (!searchText?.trim()) return;
     try {
@@ -73,6 +75,7 @@ function Dashboard() {
     }
   };
 
+  // 🔹 Translate to Tamil
   const handleTranslateToTamil = async (text) => {
     if (!text) return;
     try {
@@ -91,6 +94,7 @@ function Dashboard() {
     }
   };
 
+  // 🔹 Image upload + disease detection
   const handleImageUpload = async (file) => {
     setUploadedImage(URL.createObjectURL(file));
     try {
@@ -111,6 +115,7 @@ function Dashboard() {
 
   return (
     <div className="dashboard">
+      {/* Sidebar */}
       <Sidebar
         open={sidebarOpen}
         setOpen={setSidebarOpen}
@@ -120,11 +125,13 @@ function Dashboard() {
         activePage={activePage}
       />
 
+      {/* Topbar */}
       <div className="topbar">
         <button className="menu-btn" onClick={() => setSidebarOpen(true)}>☰</button>
         <div className="logo">🌾 AgroAI</div>
       </div>
 
+      {/* Home Page */}
       {activePage === "home" && (
         <>
           <div className="welcome-section">
@@ -138,6 +145,7 @@ function Dashboard() {
             </div>
           </div>
 
+          {/* Search */}
           <div className="search-section">
             <SearchBar
               query={query}
@@ -147,23 +155,38 @@ function Dashboard() {
               isRecording={isRecording}
               toggleRecording={() => setIsRecording(!isRecording)}
             />
+
+            {/* Results */}
+            {isSearching && <p>🔍 {selectedLanguage === "ta" ? "தேடுகிறது..." : "Searching..."}</p>}
+            {searchResults && (
+              <div className="search-results">
+                <h3>{selectedLanguage === "ta" ? "தேடல் முடிவுகள்" : "Search Results"}</h3>
+                <p>{selectedLanguage === "ta" && translatedText ? translatedText : searchResults}</p>
+              </div>
+            )}
           </div>
 
+          {/* Location Selector */}
           <LocationSelector
             onLocationChange={handleLocationChange}
             selectedLanguage={selectedLanguage}
           />
 
+          {/* Feature Tabs */}
           <div className="feature-tabs">
             <button onClick={() => setActivePage("crop")}><span style={{ fontSize: "1.6rem" }}>🌱</span> {t.crop}</button>
             <button onClick={() => setActivePage("fertilizer")}><span style={{ fontSize: "1.6rem" }}>🧪</span> {t.fertilizer}</button>
             <button onClick={() => setActivePage("irrigation")}><span style={{ fontSize: "1.6rem" }}>💧</span> {t.irrigation}</button>
-            <button onClick={() => setActivePage("disease")}><span style={{ fontSize: "1.6rem" }}>🐛 </span>{t.disease}</button>
+            <button onClick={() => setActivePage("disease")}><span style={{ fontSize: "1.6rem" }}>🐛</span> {t.disease}</button>
+            <button onClick={() => setActivePage("settings")}><span style={{ fontSize: "1.6rem" }}>⚙️</span> {t.settings}</button>
           </div>
+
+          {/* History */}
+          <RecentHistory selectedLanguage={selectedLanguage} />
         </>
-        
       )}
-<RecentHistory selectedLanguage={selectedLanguage} />
+
+      {/* Crop Page */}
       {activePage === "crop" && (
         <CropRecommendation
           location={location}
@@ -171,6 +194,8 @@ function Dashboard() {
           onBack={() => setActivePage("home")}
         />
       )}
+
+      {/* Fertilizer Page */}
       {activePage === "fertilizer" && (
         <FertilizerRecommendation
           weather={weather}
@@ -178,6 +203,8 @@ function Dashboard() {
           onBack={() => setActivePage("home")}
         />
       )}
+
+      {/* Irrigation Page */}
       {activePage === "irrigation" && (
         <IrrigationRecommendation
           location={location}
@@ -186,16 +213,22 @@ function Dashboard() {
           onBack={() => setActivePage("home")}
         />
       )}
+
+      {/* Disease Page */}
       {activePage === "disease" && (
-  <div className="disease-section">
-    <div className="page-header">
-      <button className="back-btn" onClick={() => setActivePage("home")}>←</button>
-      <h2>🐛 {selectedLanguage === "ta" ? "நோய் கண்டறிதல்" : "Disease Detection"}</h2>
-    </div>
-    <UploadCard onImageUpload={handleImageUpload} uploadedImage={uploadedImage} selectedLanguage={selectedLanguage} />
-    <DiagnosisCard result={diagnosisResult} selectedLanguage={selectedLanguage} />
-  </div>
-)}
+        <div className="disease-section">
+          <div className="page-header">
+            <button className="back-btn" onClick={() => setActivePage("home")}>←</button>
+            <h2>🐛 {selectedLanguage === "ta" ? "நோய் கண்டறிதல்" : "Disease Detection"}</h2>
+          </div>
+          <UploadCard onImageUpload={handleImageUpload} uploadedImage={uploadedImage} selectedLanguage={selectedLanguage} />
+          <DiagnosisCard result={diagnosisResult} selectedLanguage={selectedLanguage} />
+        </div>
+      )}
+
+      {/* Settings Page */}
+  
+
       {activePage === "settings" && (
   <Settings
     selectedLanguage={selectedLanguage}
