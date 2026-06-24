@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { getFertilizerRecommendation } from "../services/fertilizerRecommendation";
-import { translations } from "../utils/translations"; // import dictionary
+import { translations } from "../utils/translations";
 import "../styles/FertilizerRecommendation.css";
 
-function FertilizerRecommendation({ weather, selectedLanguage = "en", onBack }) {
+function FertilizerRecommendation({ weather, selectedLanguage = "en" }) {
   const [inputs, setInputs] = useState({
     crop_type: "",
     soil_type: "Loamy",
@@ -37,7 +37,7 @@ function FertilizerRecommendation({ weather, selectedLanguage = "en", onBack }) 
         moisture: Number(inputs.moisture || 0),
         nitrogen: Number(inputs.nitrogen || 0),
         potassium: Number(inputs.potassium || 0),
-        phosphorous: Number(inputs.phosphorus || 0), // ✅ spelling fixed
+        phosphorous: Number(inputs.phosphorus || 0),
         soil_type: inputs.soil_type,
         crop_type: inputs.crop_type,
       });
@@ -54,11 +54,7 @@ function FertilizerRecommendation({ weather, selectedLanguage = "en", onBack }) 
 
   return (
     <div className="fertilizer-card">
-      {/* Back header */}
-      <div className="page-header">
-        <button className="back-btn" onClick={onBack}>←</button>
-        <h2>🧪 {t.fertilizer}</h2>
-      </div>
+      <h2>🧪 {t.fertilizer}</h2>
 
       {/* Crop Type Dropdown */}
       <label>{selectedLanguage === "ta" ? "பயிர் வகை:" : "Crop Type:"}</label>
@@ -73,6 +69,7 @@ function FertilizerRecommendation({ weather, selectedLanguage = "en", onBack }) 
           "Maize",
           "Sugarcane",
           "Cotton",
+          "Tobacco",
           "Paddy",
           "Barley",
           "Wheat",
@@ -80,7 +77,6 @@ function FertilizerRecommendation({ weather, selectedLanguage = "en", onBack }) 
           "Oil seeds",
           "Pulses",
           "Ground Nuts",
-          "Tobacco",
         ].map((crop) => (
           <option key={crop} value={crop}>
             {crop}
@@ -105,25 +101,37 @@ function FertilizerRecommendation({ weather, selectedLanguage = "en", onBack }) 
       <div className="fertilizer-inputs">
         <input
           type="number"
-          placeholder={selectedLanguage === "ta" ? "நைட்ரஜன் (N)" : "Nitrogen (N)"}
+          min="4"
+          max="42"
+          placeholder="Nitrogen (4–42)"
+          title="Enter Nitrogen between 4 and 42"
           value={inputs.nitrogen}
           onChange={(e) => handleChange("nitrogen", e.target.value)}
         />
         <input
           type="number"
-          placeholder={selectedLanguage === "ta" ? "பாஸ்பரஸ் (P)" : "Phosphorus (P)"}
+          min="0"
+          max="42"
+          placeholder="Phosphorus (0–42)"
+          title="Enter Phosphorus between 0 and 42"
           value={inputs.phosphorus}
           onChange={(e) => handleChange("phosphorus", e.target.value)}
         />
         <input
           type="number"
-          placeholder={selectedLanguage === "ta" ? "பொட்டாசியம் (K)" : "Potassium (K)"}
+          min="0"
+          max="19"
+          placeholder="Potassium (0–19)"
+          title="Enter Potassium between 0 and 19"
           value={inputs.potassium}
           onChange={(e) => handleChange("potassium", e.target.value)}
         />
         <input
           type="number"
-          placeholder={selectedLanguage === "ta" ? "ஈரப்பதம் (%)" : "Moisture (%)"}
+          min="25"
+          max="65"
+          placeholder="Moisture (25–65)"
+          title="Enter Moisture between 25 and 65"
           value={inputs.moisture}
           onChange={(e) => handleChange("moisture", e.target.value)}
         />
