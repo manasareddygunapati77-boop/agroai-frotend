@@ -23,31 +23,39 @@ function DiseaseDetection({ selectedLanguage = "en" }) {
       return;
     }
     try {
-      setLoading(true);
-      const response = await predictDisease(imageFile);
-      const disease = response.disease_prediction.replaceAll("__", " - ").replaceAll("_", " ");
+  setLoading(true);
 
-const advice = response.advice || "N/A";
-const confidence =
-  response.confidence_score != null
-    ? (response.confidence_score * 100).toFixed(2)
-    : "N/A";
+  const response = await predictDisease(imageFile);
 
-setResult({
-  disease,
-  advice,
-  confidence,
-  status: response.status,
-});
-      const advice = lines[1]?.replace("Advice: ", "") || "N/A";
-      setResult({ disease, advice, status: response.status });
-    } catch (error) {
-      console.error(error);
-      alert(selectedLanguage === "ta" ? "நோய் கண்டறிதல் தோல்வியடைந்தது" : "Disease detection failed");
-    } finally {
-      setLoading(false);
-    }
-  };
+  const disease = response.disease_prediction
+    .replaceAll("__", " - ")
+    .replaceAll("_", " ");
+
+  const advice = response.advice || "N/A";
+
+  const confidence =
+    response.confidence_score != null
+      ? (response.confidence_score * 100).toFixed(2) + "%"
+      : "N/A";
+
+  setResult({
+    disease,
+    advice,
+    confidence,
+    status: response.status,
+  });
+
+} catch (error) {
+  console.error(error);
+  alert(
+    selectedLanguage === "ta"
+      ? "நோய் கண்டறிதல் தோல்வியடைந்தது"
+      : "Disease detection failed"
+  );
+} finally {
+  setLoading(false);
+}
+};
 
   return (
     <div className="card">
