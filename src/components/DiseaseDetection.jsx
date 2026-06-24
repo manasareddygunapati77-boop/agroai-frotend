@@ -28,8 +28,8 @@ function DiseaseDetection({ selectedLanguage = "en" }) {
       const prediction = response.disease_prediction;
       const lines = prediction.split("\n");
       const disease = lines[0].replace("Disease: ", "").replaceAll("__", " - ").replaceAll("_", " ");
-      const confidence = lines[1]?.replace("Confidence: ", "") || "N/A";
-      setResult({ disease, confidence, status: response.status });
+      const advice = lines[1]?.replace("Advice: ", "") || "N/A";
+      setResult({ disease, advice, status: response.status });
     } catch (error) {
       console.error(error);
       alert(selectedLanguage === "ta" ? "நோய் கண்டறிதல் தோல்வியடைந்தது" : "Disease detection failed");
