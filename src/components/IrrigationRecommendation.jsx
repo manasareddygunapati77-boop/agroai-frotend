@@ -12,7 +12,7 @@ function IrrigationRecommendation({ location, weather, selectedLanguage = "en", 
     farm_size_acres: "",
     soil_moisture_percent: "",
     groundwater_availability: "",
-    rainfall_mm: "", // optional manual override
+    rainfall_mm: "",
   });
 
   const [result, setResult] = useState(null);
@@ -22,51 +22,53 @@ function IrrigationRecommendation({ location, weather, selectedLanguage = "en", 
     setInputs({ ...inputs, [field]: value });
   };
 
-const handleIrrigationRecommendation = async () => {
-  try {
-        console.log("Current Inputs:", inputs);
-    console.log("Season =", inputs.season);
-    console.log("Region =", inputs.region);
-
-    const payload = {
-      crop_type: inputs.crop_type,
-      soil_type: inputs.soil_type,
-      region: inputs.region,
-      season: inputs.season,
-      farm_size_acres: Number(inputs.farm_size_acres || 0),
-      soil_moisture_percent: Number(inputs.soil_moisture_percent || 0),
-      groundwater_availability: inputs.groundwater_availability,
-      rainfall_mm: Number(inputs.rainfall_mm || weather?.rainfall || 0),
-
-      // IMPORTANT: use temperature_C not temperature_c
-      temperature_C: weather?.temperature || 0,
-
-      humidity_percent: weather?.humidity || 0,
-      location: location?.village || "Unknown",
-    };
-
-    console.log("Payload being sent:", payload);
-
-    const res = await getIrrigationRecommendation(payload);
-
-    console.log("API Response:", res);
-
-    setResult(res);
-
-  } catch (err) {
-    console.error("Irrigation API error:", err);
-
-    if (err.response) {
-      console.error("Backend Response:", err.response.data);
+  const handleIrrigationRecommendation = async () => {
+    if (
+      !inputs.crop_type ||
+      !inputs.region ||
+      !inputs.season ||
+      !inputs.groundwater_availability
+    ) {
+      alert(
+        selectedLanguage === "ta"
+          ? "⚠️ அனைத்து தேர்வுகளையும் தேர்ந்தெடுக்கவும்!"
+          : "⚠️ Please select Crop Type, Region, Season, and Groundwater Availability before submitting!"
+      );
+      return;
     }
 
-    alert(
-      selectedLanguage === "ta"
-        ? "நீர்ப்பாசன பரிந்துரை தோல்வியடைந்தது"
-        : "Irrigation recommendation failed"
-    );
-  }
-};
+    try {
+      const payload = {
+        crop_type: inputs.crop_type,
+        soil_type: inputs.soil_type,
+        region: inputs.region,
+        season: inputs.season,
+        farm_size_acres: Number(inputs.farm_size_acres || 0),
+        soil_moisture_percent: Number(inputs.soil_moisture_percent || 0),
+        groundwater_availability: inputs.groundwater_availability,
+        rainfall_mm: Number(inputs.rainfall_mm || weather?.rainfall || 0),
+        temperature_C: weather?.temperature || 0,
+        humidity_percent: weather?.humidity || 0,
+        location: location?.village || "Unknown",
+      };
+
+      console.log("Payload being sent:", payload);
+
+      const res = await getIrrigationRecommendation(payload);
+      setResult(res);
+    } catch (err) {
+      console.error("Irrigation API error:", err);
+      if (err.response) {
+        console.error("Backend Response:", err.response.data);
+      }
+      alert(
+        selectedLanguage === "ta"
+          ? "நீர்ப்பாசன பரிந்துரை தோல்வியடைந்தது"
+          : "Irrigation recommendation failed"
+      );
+    }
+  };
+
   return (
     <div className="irrigation-card">
       {/* Back header */}
@@ -102,6 +104,7 @@ const handleIrrigationRecommendation = async () => {
       {/* Region */}
       <label>{selectedLanguage === "ta" ? "பகுதி:" : "Region:"}</label>
       <select value={inputs.region} onChange={(e) => handleChange("region", e.target.value)}>
+        <option value="">{selectedLanguage === "ta" ? "தேர்ந்தெடுக்கவும்" : "Select Region"}</option>
         <option value="Humid">Humid → high rainfall</option>
         <option value="Arid">Arid → very dry</option>
         <option value="Semi-Arid">Semi-Arid → moderately dry</option>
@@ -111,6 +114,7 @@ const handleIrrigationRecommendation = async () => {
       {/* Season */}
       <label>{selectedLanguage === "ta" ? "பருவம்:" : "Season:"}</label>
       <select value={inputs.season} onChange={(e) => handleChange("season", e.target.value)}>
+        <option value="">{selectedLanguage === "ta" ? "தேர்ந்தெடுக்கவும்" : "Select Season"}</option>
         <option value="Kharif">Kharif → Jun – Oct</option>
         <option value="Rabi">Rabi → Nov – Mar</option>
         <option value="Zaid">Zaid → Apr – Jun</option>
@@ -156,6 +160,7 @@ const handleIrrigationRecommendation = async () => {
         value={inputs.groundwater_availability}
         onChange={(e) => handleChange("groundwater_availability", e.target.value)}
       >
+        <option value="">{selectedLanguage === "ta" ? "தேர்ந்தெடுக்கவும்" : "Select"}</option>
         <option value="Low">Low → scarce</option>
         <option value="Medium">Medium → moderate</option>
         <option value="High">High → plenty</option>
@@ -173,10 +178,6 @@ const handleIrrigationRecommendation = async () => {
               (selectedLanguage === "ta"
                 ? "பரிந்துரை கிடைக்கவில்லை"
                 : "No recommendation available")}
-                <div style={{ marginTop: "10px", color: "red" }}>
-  <p>Region State: {inputs.region}</p>
-  <p>Season State: {inputs.season}</p>
-</div>
           </p>
         </div>
       )}
