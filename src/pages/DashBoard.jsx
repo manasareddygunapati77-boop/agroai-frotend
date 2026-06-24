@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState,useRef } from "react";
 import LocationSelector from "../components/LocationSelector";
 import SearchBar from "../components/SearchBar";
 import CropRecommendation from "../components/CropRecommendation";
@@ -28,6 +28,7 @@ function Dashboard() {
   const [searchResults, setSearchResults] = useState(null);
   const [isSearching, setIsSearching] = useState(false);
   const [isRecording, setIsRecording] = useState(false);
+const recognitionRef = useRef(null);
   const [weather, setWeather] = useState(null);
   const [activePage, setActivePage] = useState("home");
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -74,6 +75,61 @@ function Dashboard() {
       setIsSearching(false);
     }
   };
+  const toggleRecording = () => {
+  // Browser support check
+  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!SpeechRecognition) {
+    alert(
+      selectedLanguage === "ta"
+        ? "உங்கள் உலாவி குரல் தேடலை ஆதரிக்கவில்லை"
+        : "Your browser doesn't support voice search. Try Chrome or Edge."
+    );
+    return;
+  }
+
+  // If already recording, stop it
+  if (isRecording) {
+    recognitionRef.current?.stop();
+    setIsRecording(false);
+    return;
+  }
+
+  const recognition = new SpeechRecognition();
+  recognition.lang = selectedLanguage === "ta" ? "ta-IN" : "en-IN";
+  recognition.continuous = false;
+  recognition.interimResults = false;
+
+  recognition.onstart = () => {
+    setIsRecording(true);
+  };
+
+  recognition.onresult = (event) => {
+    const transcript = event.results[0][0].transcript;
+    setQuery(transcript);
+    setIsRecording(false);
+    // Auto-trigger search once voice input is captured
+    handleSearch(transcript);
+  };
+
+  recognition.onerror = (event) => {
+    console.error("Speech recognition error:", event.error);
+    setIsRecording(false);
+    if (event.error === "not-allowed") {
+      alert(
+        selectedLanguage === "ta"
+          ? "மைக் அனுமதி தேவை"
+          : "Microphone permission denied. Please allow mic access in your browser settings."
+      );
+    }
+  };
+
+  recognition.onend = () => {
+    setIsRecording(false);
+  };
+
+  recognitionRef.current = recognition;
+  recognition.start();
+};
 
   // 🔹 Translate to Tamil
   const handleTranslateToTamil = async (text) => {
@@ -153,7 +209,7 @@ function Dashboard() {
               onSearch={handleSearch}
               selectedLanguage={selectedLanguage}
               isRecording={isRecording}
-              toggleRecording={() => setIsRecording(!isRecording)}
+              toggleRecording={toggleRecording}
             />
 
             {/* Results */}
