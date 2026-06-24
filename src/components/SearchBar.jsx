@@ -84,12 +84,15 @@ function SearchBar({
         />
 
         {/* Microphone icon inside input */}
-        <FontAwesomeIcon
-          icon={faMicrophone}
-          className={`mic-icon ${isRecording ? "recording" : ""}`}
-          onClick={toggleRecording}
-          title={selectedLanguage === "ta" ? "மைக் அழுத்தவும்" : "Click to speak"}
-        />
+<FontAwesomeIcon
+  icon={faMicrophone}
+  className={`mic-icon ${isRecording ? "recording" : ""}`}
+  onClick={() => {
+    console.log("✅ Mic icon clicked, toggleRecording =", typeof toggleRecording);
+    toggleRecording();
+  }}
+  title={selectedLanguage === "ta" ? "மைக் அழுத்தவும்" : "Click to speak"}
+/>
       </div>
 
       <button onClick={() => onSearch(query)}>
