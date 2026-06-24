@@ -24,7 +24,9 @@ function IrrigationRecommendation({ location, weather, selectedLanguage = "en", 
 
 const handleIrrigationRecommendation = async () => {
   try {
-    console.log("Current Inputs:", inputs);
+        console.log("Current Inputs:", inputs);
+    console.log("Season =", inputs.season);
+    console.log("Region =", inputs.region);
 
     const payload = {
       crop_type: inputs.crop_type,
