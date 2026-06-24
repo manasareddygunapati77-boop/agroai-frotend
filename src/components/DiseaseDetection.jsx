@@ -25,9 +25,20 @@ function DiseaseDetection({ selectedLanguage = "en" }) {
     try {
       setLoading(true);
       const response = await predictDisease(imageFile);
-      const prediction = response.disease_prediction;
-      const lines = prediction.split("\n");
-      const disease = lines[0].replace("Disease: ", "").replaceAll("__", " - ").replaceAll("_", " ");
+      const disease = response.disease_prediction.replaceAll("__", " - ").replaceAll("_", " ");
+
+const advice = response.advice || "N/A";
+const confidence =
+  response.confidence_score != null
+    ? (response.confidence_score * 100).toFixed(2)
+    : "N/A";
+
+setResult({
+  disease,
+  advice,
+  confidence,
+  status: response.status,
+});
       const advice = lines[1]?.replace("Advice: ", "") || "N/A";
       setResult({ disease, advice, status: response.status });
     } catch (error) {
