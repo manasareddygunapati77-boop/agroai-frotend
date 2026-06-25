@@ -12,6 +12,7 @@ function CropRecommendation({ location, selectedLanguage = "en" }) {
   });
 
   const [cropResult, setCropResult] = useState(null);
+  const [loading, setLoading] = useState(false); // NEW state
   const t = translations[selectedLanguage];
 
   const handleCropRecommendation = async () => {
@@ -23,6 +24,9 @@ function CropRecommendation({ location, selectedLanguage = "en" }) {
       );
       return;
     }
+
+    setLoading(true); // start loader
+    setCropResult(null); // clear old result
 
     try {
       const res = await predictCrop({
@@ -41,6 +45,8 @@ function CropRecommendation({ location, selectedLanguage = "en" }) {
             ? "பயிர் கணிப்பு தோல்வியடைந்தது"
             : "Crop prediction failed",
       });
+    } finally {
+      setLoading(false); // stop loader
     }
   };
 
@@ -49,12 +55,12 @@ function CropRecommendation({ location, selectedLanguage = "en" }) {
       <h2>{t.cropRecommendation}</h2>
 
       <div className="inputs-grid">
+        {/* Inputs same as before */}
         <input
           type="number"
           min="0"
           max="140"
           placeholder="Nitrogen (0–140)"
-          title="Enter Nitrogen between 0 and 140"
           value={soilInputs.nitrogen}
           onChange={(e) =>
             setSoilInputs({ ...soilInputs, nitrogen: e.target.value })
@@ -65,7 +71,6 @@ function CropRecommendation({ location, selectedLanguage = "en" }) {
           min="5"
           max="145"
           placeholder="Phosphorus (5–145)"
-          title="Enter Phosphorus between 5 and 145"
           value={soilInputs.phosphorus}
           onChange={(e) =>
             setSoilInputs({ ...soilInputs, phosphorus: e.target.value })
@@ -76,7 +81,6 @@ function CropRecommendation({ location, selectedLanguage = "en" }) {
           min="5"
           max="205"
           placeholder="Potassium (5–205)"
-          title="Enter Potassium between 5 and 205"
           value={soilInputs.potassium}
           onChange={(e) =>
             setSoilInputs({ ...soilInputs, potassium: e.target.value })
@@ -88,7 +92,6 @@ function CropRecommendation({ location, selectedLanguage = "en" }) {
           min="3.5"
           max="9.93"
           placeholder="pH (3.5–9.93)"
-          title="Enter pH between 3.5 and 9.93"
           value={soilInputs.ph}
           onChange={(e) =>
             setSoilInputs({ ...soilInputs, ph: e.target.value })
@@ -100,7 +103,17 @@ function CropRecommendation({ location, selectedLanguage = "en" }) {
         {selectedLanguage === "ta" ? "பயிரை கணிக்கவும்" : "Predict Crop"}
       </button>
 
-      {cropResult && (
+      {/* Loader */}
+      {loading && (
+        <div className="loader">
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+      )}
+
+      {/* Result */}
+      {cropResult && !loading && (
         <div className="crop-result">
           <h3>🌱 Crop: {cropResult.prediction}</h3>
           <p>🌡 Temp: {cropResult.features?.temperature}</p>
