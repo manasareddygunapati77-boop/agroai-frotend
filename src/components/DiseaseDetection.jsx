@@ -3,7 +3,7 @@ import UploadCard from "../components/UploadCard";
 import DiagnosisCard from "../components/DiagnosisCard";
 import { translations } from "../utils/translations";
 import { predictDisease } from "../services/disease";
-import "../styles/Card.css";
+import "../styles/DiagnosisCard.css";
 
 function DiseaseDetection({ selectedLanguage = "en" }) {
   const [imageFile, setImageFile] = useState(null);
