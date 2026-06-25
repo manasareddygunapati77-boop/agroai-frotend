@@ -23,49 +23,75 @@ function DiseaseDetection({ selectedLanguage = "en" }) {
       return;
     }
     try {
-  setLoading(true);
+      setLoading(true);
+      setResult(null); // clear old result
 
-  const response = await predictDisease(imageFile);
+      const response = await predictDisease(imageFile);
 
-  const disease = response.disease_prediction
-    .replaceAll("__", " - ")
-    .replaceAll("_", " ");
+      const disease = response.disease_prediction
+        .replaceAll("__", " - ")
+        .replaceAll("_", " ");
 
-  const advice = response.advice || "N/A";
+      const advice = response.advice || "N/A";
 
-  const confidence =
-    response.confidence_score != null
-      ? (response.confidence_score * 100).toFixed(2) + "%"
-      : "N/A";
+      const confidence =
+        response.confidence_score != null
+          ? (response.confidence_score * 100).toFixed(2) + "%"
+          : "N/A";
 
-  setResult({
-    disease,
-    advice,
-    confidence,
-    status: response.status,
-  });
-
-} catch (error) {
-  console.error(error);
-  alert(
-    selectedLanguage === "ta"
-      ? "நோய் கண்டறிதல் தோல்வியடைந்தது"
-      : "Disease detection failed"
-  );
-} finally {
-  setLoading(false);
-}
-};
+      setResult({
+        disease,
+        advice,
+        confidence,
+        status: response.status,
+      });
+    } catch (error) {
+      console.error(error);
+      alert(
+        selectedLanguage === "ta"
+          ? "நோய் கண்டறிதல் தோல்வியடைந்தது"
+          : "Disease detection failed"
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="card">
       <h2>{t.diseaseDetection}</h2>
-      <UploadCard onImageUpload={handleImageUpload} uploadedImage={imagePreview} selectedLanguage={selectedLanguage}/>
+
+      <UploadCard
+        onImageUpload={handleImageUpload}
+        uploadedImage={imagePreview}
+        selectedLanguage={selectedLanguage}
+      />
+
       <button onClick={handleDetect}>
-        {loading ? (selectedLanguage === "ta" ? "கண்டறியப்படுகிறது..." : "Detecting...") : (selectedLanguage === "ta" ? "நோயை கண்டறியவும்" : "Detect Disease")}
+        {loading
+          ? selectedLanguage === "ta"
+            ? "கண்டறியப்படுகிறது..."
+            : "Detecting..."
+          : selectedLanguage === "ta"
+          ? "நோயை கண்டறியவும்"
+          : "Detect Disease"}
       </button>
-      <DiagnosisCard result={result} selectedLanguage={selectedLanguage}/>
+
+      {/* Loader */}
+      {loading && (
+        <div className="loader">
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+      )}
+
+      {/* Result */}
+      {result && !loading && (
+        <DiagnosisCard result={result} selectedLanguage={selectedLanguage} />
+      )}
     </div>
   );
 }
+
 export default DiseaseDetection;
