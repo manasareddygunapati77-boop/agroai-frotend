@@ -27,9 +27,8 @@ function DiseaseDetection({ selectedLanguage = "en" }) {
       setResult(null); // clear old result
 
       const response = await predictDisease(imageFile);
-      setResult(response); 
-
-      catch (error) {
+      setResult(response);
+    } catch (error) {
       console.error(error);
       alert(
         selectedLanguage === "ta"
@@ -61,19 +60,12 @@ function DiseaseDetection({ selectedLanguage = "en" }) {
           : "Detect Disease"}
       </button>
 
-      {/* Loader */}
-      {loading && (
-        <div className="loader">
-          <span></span>
-          <span></span>
-          <span></span>
-        </div>
-      )}
-
-      {/* Result */}
-      {result && !loading && (
-        <DiagnosisCard result={result} selectedLanguage={selectedLanguage} loading={loading} />
-      )}
+      {/* Always render DiagnosisCard and let it handle states */}
+      <DiagnosisCard
+        result={result}
+        selectedLanguage={selectedLanguage}
+        loading={loading}
+      />
     </div>
   );
 }
