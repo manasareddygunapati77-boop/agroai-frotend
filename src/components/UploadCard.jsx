@@ -1,10 +1,11 @@
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { translations } from "../utils/translations";
 import "../styles/Uploadcard.css";
 
 function UploadCard({ onImageUpload, uploadedImage, selectedLanguage = "en" }) {
   const fileRef = useRef();
   const cameraRef = useRef();
+  const [loading, setLoading] = useState(false); // NEW state
   const t = translations[selectedLanguage];
 
   const handleFileClick = () => fileRef.current.click();
@@ -12,7 +13,17 @@ function UploadCard({ onImageUpload, uploadedImage, selectedLanguage = "en" }) {
 
   const handleChange = (e) => {
     const file = e.target.files?.[0];
-    if (file) onImageUpload(file);
+    if (file) {
+      setLoading(true); // start loader
+      onImageUpload(file);
+
+      // simulate preview load delay
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setLoading(false); // stop loader once preview ready
+      };
+      reader.readAsDataURL(file);
+    }
   };
 
   return (
@@ -35,6 +46,15 @@ function UploadCard({ onImageUpload, uploadedImage, selectedLanguage = "en" }) {
           {selectedLanguage === "ta" ? "கேமராவிலிருந்து எடுக்கவும்" : "Capture from Camera"}
         </button>
       </div>
+
+      {/* Loader */}
+      {loading && (
+        <div className="loader">
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+      )}
 
       {/* File input */}
       <input
