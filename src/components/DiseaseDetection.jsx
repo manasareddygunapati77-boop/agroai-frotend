@@ -27,8 +27,25 @@ function DiseaseDetection({ selectedLanguage = "en" }) {
       setResult(null); // clear old result
 
       const response = await predictDisease(imageFile);
-      console.log("Backend response:", response); // debug log
-      setResult(response);
+
+      // Parse backend response into clean fields
+      const disease = response.disease_prediction
+        ? response.disease_prediction.replaceAll("__", " - ").replaceAll("_", " ")
+        : "N/A";
+
+      const confidence =
+        response.confidence_score != null
+          ? (response.confidence_score * 100).toFixed(2) + "%"
+          : "N/A";
+
+      const advice = response.advice || "N/A";
+
+      setResult({
+        disease,
+        confidence,
+        advice,
+        status: response.status,
+      });
     } catch (error) {
       console.error(error);
       alert(
@@ -61,12 +78,7 @@ function DiseaseDetection({ selectedLanguage = "en" }) {
           : "Detect Disease"}
       </button>
 
-      {/* Always render DiagnosisCard and let it handle states */}
-      <DiagnosisCard
-        result={result}
-        selectedLanguage={selectedLanguage}
-        loading={loading}
-      />
+      <DiagnosisCard result={result} selectedLanguage={selectedLanguage} />
     </div>
   );
 }
