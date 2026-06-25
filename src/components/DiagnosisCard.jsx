@@ -38,19 +38,13 @@ function DiagnosisCard({ result, selectedLanguage = "en", loading = false }) {
   return (
     <div className="diagnosis-card">
       <h2>{t.disease}</h2>
-
       <div className="diagnosis-result">
-        <h3>{result.disease}</h3>
-        <p>
-          <strong>Advice:</strong> {result.advice}
-        </p>
-        <p>
-          {t.confidence}: {result.confidence}
-        </p>
-        <p>
-          {t.status}: {result.status}
-        </p>
-      </div>
+  <h3>{result.disease_prediction.replaceAll("__", " - ").replaceAll("_", " ")}</h3>
+  <p><strong>Advice:</strong> {result.advice}</p>
+  <p>{t.confidence}: {(result.confidence_score * 100).toFixed(2)}%</p>
+  <p>{t.status}: {result.status}</p>
+</div>
+
     </div>
   );
 }
