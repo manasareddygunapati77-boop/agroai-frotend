@@ -1,8 +1,26 @@
 import "../styles/DiagnosisCard.css";
 import { translations } from "../utils/translations";
 
-function DiagnosisCard({ result, selectedLanguage = "en" }) {
+function DiagnosisCard({ result, selectedLanguage = "en", loading = false }) {
   const t = translations[selectedLanguage];
+
+  if (loading) {
+    return (
+      <div className="diagnosis-card">
+        <h2>{t.disease}</h2>
+        <div className="loader">
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+        <p>
+          {selectedLanguage === "ta"
+            ? "🔍 நோய் கண்டறியப்படுகிறது..."
+            : "🔍 Detecting disease..."}
+        </p>
+      </div>
+    );
+  }
 
   if (!result) {
     return (
@@ -24,12 +42,11 @@ function DiagnosisCard({ result, selectedLanguage = "en" }) {
       <div className="diagnosis-result">
         <h3>{result.disease}</h3>
         <p>
-  <strong>Advice:</strong> {result.advice}
-</p>
+          <strong>Advice:</strong> {result.advice}
+        </p>
         <p>
           {t.confidence}: {result.confidence}
         </p>
-
         <p>
           {t.status}: {result.status}
         </p>
