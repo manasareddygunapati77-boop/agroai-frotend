@@ -27,6 +27,7 @@ function DiseaseDetection({ selectedLanguage = "en" }) {
       setResult(null); // clear old result
 
       const response = await predictDisease(imageFile);
+      console.log("Backend response:", response); // debug log
       setResult(response);
     } catch (error) {
       console.error(error);
