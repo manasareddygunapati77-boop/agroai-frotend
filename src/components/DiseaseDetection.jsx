@@ -88,7 +88,7 @@ function DiseaseDetection({ selectedLanguage = "en" }) {
 
       {/* Result */}
       {result && !loading && (
-        <DiagnosisCard result={result} selectedLanguage={selectedLanguage} />
+        <DiagnosisCard result={result} selectedLanguage={selectedLanguage} loading={loading} />
       )}
     </div>
   );
