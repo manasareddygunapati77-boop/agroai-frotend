@@ -28,8 +28,22 @@ function DiseaseDetection({ selectedLanguage = "en" }) {
 
       const response = await predictDisease(imageFile);
 
-      // Parse backend response into clean fields
-       setResult(response);
+      // Convert backend JSON into line-based format
+      const lines = [
+        response.disease_prediction || "N/A",
+        response.advice || "N/A",
+        response.confidence_score != null
+          ? (response.confidence_score * 100).toFixed(2) + "%"
+          : "N/A",
+        response.status || "N/A",
+      ];
+
+      const disease = lines[0].replaceAll("__", " - ").replaceAll("_", " ");
+      const advice = lines[1];
+      const confidence = lines[2];
+      const status = lines[3];
+
+      setResult({ disease, advice, confidence, status });
     } catch (error) {
       console.error(error);
       alert(
