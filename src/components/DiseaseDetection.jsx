@@ -27,25 +27,9 @@ function DiseaseDetection({ selectedLanguage = "en" }) {
       setResult(null); // clear old result
 
       const response = await predictDisease(imageFile);
+      setResult(response); 
 
-      const disease = response.disease_prediction
-        .replaceAll("__", " - ")
-        .replaceAll("_", " ");
-
-      const advice = response.advice || "N/A";
-
-      const confidence =
-        response.confidence_score != null
-          ? (response.confidence_score * 100).toFixed(2) + "%"
-          : "N/A";
-
-      setResult({
-        disease,
-        advice,
-        confidence,
-        status: response.status,
-      });
-    } catch (error) {
+      catch (error) {
       console.error(error);
       alert(
         selectedLanguage === "ta"
