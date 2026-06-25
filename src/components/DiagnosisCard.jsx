@@ -38,20 +38,22 @@ function DiagnosisCard({ result, selectedLanguage = "en", loading = false }) {
   return (
     <div className="diagnosis-card">
       <h2>{t.disease}</h2>
-     <div className="diagnosis-result">
-  <h3>
-    {result.disease_prediction
-      ? result.disease_prediction.replaceAll("__", " - ").replaceAll("_", " ")
-      : selectedLanguage === "ta"
-        ? "நோய் கிடைக்கவில்லை"
-        : "No disease prediction"}
-  </h3>
-  <p><strong>Advice:</strong> {result.advice || "N/A"}</p>
-  <p>{t.confidence}: {result.confidence_score != null ? (result.confidence_score * 100).toFixed(2) + "%" : "N/A"}</p>
-  <p>{t.status}: {result.status}</p>
-</div>
-
-
+      <div className="diagnosis-result">
+        <h3>
+          {result.disease_prediction
+            ? result.disease_prediction.replaceAll("__", " - ").replaceAll("_", " ")
+            : selectedLanguage === "ta"
+              ? "நோய் கிடைக்கவில்லை"
+              : "No disease prediction"}
+        </h3>
+        <p><strong>Advice:</strong> {result.advice || "N/A"}</p>
+        <p>
+          {t.confidence}: {result.confidence_score != null
+            ? (result.confidence_score * 100).toFixed(2) + "%"
+            : "N/A"}
+        </p>
+        <p>{t.status}: {result.status || "N/A"}</p>
+      </div>
     </div>
   );
 }
