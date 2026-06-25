@@ -14,6 +14,7 @@ function FertilizerRecommendation({ weather, selectedLanguage = "en" }) {
   });
 
   const [result, setResult] = useState(null);
+  const [loading, setLoading] = useState(false); // NEW state
   const t = translations[selectedLanguage];
 
   const handleChange = (field, value) => {
@@ -30,6 +31,9 @@ function FertilizerRecommendation({ weather, selectedLanguage = "en" }) {
       return;
     }
 
+    setLoading(true);   // start loader
+    setResult(null);    // clear old result
+
     try {
       const res = await getFertilizerRecommendation({
         temperature: weather?.temperature || 0,
@@ -44,11 +48,14 @@ function FertilizerRecommendation({ weather, selectedLanguage = "en" }) {
       setResult(res);
     } catch (err) {
       console.error("Fertilizer API error:", err);
-      alert(
-        selectedLanguage === "ta"
-          ? "உர பரிந்துரை தோல்வியடைந்தது"
-          : "Fertilizer recommendation failed"
-      );
+      setResult({
+        recommended_fertilizer:
+          selectedLanguage === "ta"
+            ? "உர பரிந்துரை தோல்வியடைந்தது"
+            : "Fertilizer recommendation failed",
+      });
+    } finally {
+      setLoading(false); // stop loader
     }
   };
 
@@ -104,7 +111,6 @@ function FertilizerRecommendation({ weather, selectedLanguage = "en" }) {
           min="4"
           max="42"
           placeholder="Nitrogen (4–42)"
-          title="Enter Nitrogen between 4 and 42"
           value={inputs.nitrogen}
           onChange={(e) => handleChange("nitrogen", e.target.value)}
         />
@@ -113,7 +119,6 @@ function FertilizerRecommendation({ weather, selectedLanguage = "en" }) {
           min="0"
           max="42"
           placeholder="Phosphorus (0–42)"
-          title="Enter Phosphorus between 0 and 42"
           value={inputs.phosphorus}
           onChange={(e) => handleChange("phosphorus", e.target.value)}
         />
@@ -122,7 +127,6 @@ function FertilizerRecommendation({ weather, selectedLanguage = "en" }) {
           min="0"
           max="19"
           placeholder="Potassium (0–19)"
-          title="Enter Potassium between 0 and 19"
           value={inputs.potassium}
           onChange={(e) => handleChange("potassium", e.target.value)}
         />
@@ -131,7 +135,6 @@ function FertilizerRecommendation({ weather, selectedLanguage = "en" }) {
           min="25"
           max="65"
           placeholder="Moisture (25–65)"
-          title="Enter Moisture between 25 and 65"
           value={inputs.moisture}
           onChange={(e) => handleChange("moisture", e.target.value)}
         />
@@ -141,7 +144,17 @@ function FertilizerRecommendation({ weather, selectedLanguage = "en" }) {
         {selectedLanguage === "ta" ? "பரிந்துரையை பெறவும்" : "Get Recommendation"}
       </button>
 
-      {result && (
+      {/* Loader */}
+      {loading && (
+        <div className="loader">
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+      )}
+
+      {/* Result */}
+      {result && !loading && (
         <div className="fertilizer-result">
           <h3>✅ {selectedLanguage === "ta" ? "பரிந்துரை" : "Recommendation"}</h3>
           <p>
