@@ -20,12 +20,23 @@ function DiagnosisCard({ result, selectedLanguage = "en" }) {
   return (
     <div className="diagnosis-card">
       <h2>{t.disease}</h2>
-      <div className="diagnosis-result">
-        <h3>{result.disease}</h3>
-        <pre>{JSON.stringify(result, null, 2)}</pre>
-        <p>{t.confidence}: {result.confidence}</p>
-        <p>{t.status}: {result.status}</p>
-      </div>
+     <div className="diagnosis-result">
+  <h3>{result.disease}</h3>
+
+  <pre>{JSON.stringify(result, null, 2)}</pre>
+
+  <p>
+    <strong>Advice:</strong> {result.advice}
+  </p>
+
+  <p>
+    <strong>{t.confidence}:</strong> {result.confidence}
+  </p>
+
+  <p>
+    <strong>{t.status}:</strong> {result.status}
+  </p>
+</div>
     </div>
   );
 }
