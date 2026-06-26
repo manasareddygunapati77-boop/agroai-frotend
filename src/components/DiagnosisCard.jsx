@@ -23,8 +23,6 @@ function DiagnosisCard({ result, selectedLanguage = "en" }) {
      <div className="diagnosis-result">
   <h3>{result.disease}</h3>
 
-  <pre>{JSON.stringify(result, null, 2)}</pre>
-
   <p>
     <strong>Advice:</strong> {result.advice}
   </p>
