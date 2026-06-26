@@ -22,11 +22,10 @@ function DiagnosisCard({ result, selectedLanguage = "en" }) {
       <h2>{t.disease}</h2>
       <div className="diagnosis-result">
         <h3>{result.disease}</h3>
-        <p><strong>Advice:</strong> {result.advice}</p>
+        <pre>{JSON.stringify(result, null, 2)}</pre>
         <p>{t.confidence}: {result.confidence}</p>
         <p>{t.status}: {result.status}</p>
       </div>
-      console.log("DiagnosisCard Result:", result);
     </div>
   );
 }
