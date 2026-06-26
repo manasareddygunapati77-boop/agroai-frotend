@@ -28,6 +28,10 @@ function DiseaseDetection({ selectedLanguage = "en" }) {
 
       const response = await predictDisease(imageFile);
 
+console.log("Response:", response);
+console.log("Advice:", response.advice);
+console.log("Confidence:", response.confidence_score);
+    
       // Convert backend JSON into line-based format
       const lines = [
         response.disease_prediction || "N/A",
@@ -42,8 +46,17 @@ function DiseaseDetection({ selectedLanguage = "en" }) {
       const advice = lines[1];
       const confidence = lines[2];
       const status = lines[3];
+     const finalResult = {
+  disease,
+  advice,
+  confidence,
+  status,
+};
 
-      setResult({ disease, advice, confidence, status });
+console.log("Final Result:", finalResult);
+
+setResult(finalResult);
+     
     } catch (error) {
       console.error(error);
       alert(
