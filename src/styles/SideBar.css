@@ -93,10 +93,9 @@
 
 .sidebar-menu a.active-link,
 .sidebar-menu button.active-link {
-  background-color: #e8f5e9;
-  color: #2e7d32;
+  background: transparent;
+  color: inherit;
 }
-
 .sidebar-menu a span,
 .sidebar-menu button span {
   display: inline-flex;
