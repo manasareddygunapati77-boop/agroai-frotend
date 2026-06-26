@@ -3,7 +3,7 @@ import { translations } from "../utils/translations";
 
 function DiagnosisCard({ result, selectedLanguage = "en" }) {
   const t = translations[selectedLanguage];
-
+    console.log("DiagnosisCard result:", result);
   if (!result) {
     return (
       <div className="diagnosis-card">
