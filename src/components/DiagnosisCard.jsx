@@ -26,6 +26,7 @@ function DiagnosisCard({ result, selectedLanguage = "en" }) {
         <p>{t.confidence}: {result.confidence}</p>
         <p>{t.status}: {result.status}</p>
       </div>
+      console.log("DiagnosisCard Result:", result);
     </div>
   );
 }
